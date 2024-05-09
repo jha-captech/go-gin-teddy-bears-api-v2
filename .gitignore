@@ -24,6 +24,6 @@ go.work
 .vscode
 .env
 
-docs/
+# docs/
 
 *.db
