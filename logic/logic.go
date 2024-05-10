@@ -15,9 +15,22 @@ type Logic struct {
 	Db *gorm.DB
 }
 
-func InitLogic(config *config.Config) (*Logic, error) {
+// TODO add db abstraction
+
+func InitLogic(config *config.Config, dbOpen gorm.Dialector) (*Logic, error) {
+	db, err := dbSetup(dbOpen)
+	if err != nil {
+		return nil, fmt.Errorf("error establishing DB connection: %s", err)
+	}
+
+	return &Logic{
+		Db: db,
+	}, nil
+}
+
+func dbSetup(dbOpen gorm.Dialector) (*gorm.DB, error) {
 	db, err := gorm.Open(
-		sqlite.Open(config.Database.Name),
+		dbOpen,
 		&gorm.Config{},
 	)
 	if err != nil {
@@ -33,5 +46,9 @@ func InitLogic(config *config.Config) (*Logic, error) {
 		&models.PicnicParticipant{},
 	)
 
-	return &Logic{Db: db}, nil
+	return db, err
+}
+
+func SqliteOpen(config *config.Config) gorm.Dialector {
+	return sqlite.Open(config.Database.Name)
 }

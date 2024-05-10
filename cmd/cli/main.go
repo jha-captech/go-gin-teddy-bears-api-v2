@@ -19,7 +19,8 @@ func Execute() {
 	config := config.HydrateConfigFromEnv()
 
 	// logic setup
-	logic, err := logic.InitLogic(config)
+	dbSetup := logic.SqliteOpen(config)
+	logic, err := logic.InitLogic(config, dbSetup)
 	if err != nil {
 		panic(err)
 	}

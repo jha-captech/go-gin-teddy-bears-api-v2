@@ -26,8 +26,8 @@ func (router Router) location(r *gin.RouterGroup) {
 	r.DELETE("/:id", router.deleteLocationById)
 }
 
-// @Summary		Get all picnic locations
-// @Description	Get all picnic locations
+// @Summary		List all picnic locations
+// @Description	List all picnic locations
 // @Tags		location
 // @Accept		json
 // @Produce		json
@@ -53,8 +53,8 @@ func (router Router) listAllLocations(c *gin.Context) {
 	)
 }
 
-// @Summary		Get a picnic location by id
-// @Description	Get a picnic location by id
+// @Summary		Fetch a picnic location by id
+// @Description	Fetch a picnic location by id
 // @Tags		location
 // @Accept		json
 // @Produce		json
@@ -147,8 +147,8 @@ func (router Router) updateLocationById(c *gin.Context) {
 	)
 }
 
-// @Summary		Add a picnic location
-// @Description	Add a picnic location
+// @Summary		Create a picnic location
+// @Description	Create a picnic location
 // @Tags		location
 // @Accept		json
 // @Produce		json

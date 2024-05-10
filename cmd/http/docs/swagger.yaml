@@ -120,7 +120,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all picnic locations
+      description: List all picnic locations
       produces:
       - application/json
       responses:
@@ -132,13 +132,13 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Get all picnic locations
+      summary: List all picnic locations
       tags:
       - location
     post:
       consumes:
       - application/json
-      description: Add a picnic location
+      description: Create a picnic location
       parameters:
       - description: Location Object
         in: body
@@ -161,7 +161,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Add a picnic location
+      summary: Create a picnic location
       tags:
       - location
   /location/{id}:
@@ -196,7 +196,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a picnic location by id
+      description: Fetch a picnic location by id
       parameters:
       - description: Location ID
         in: path
@@ -218,7 +218,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Get a picnic location by id
+      summary: Fetch a picnic location by id
       tags:
       - location
     put:
@@ -259,7 +259,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all teddy bears
+      description: List all teddy bears
       produces:
       - application/json
       responses:
@@ -271,13 +271,13 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Get all teddy bears
+      summary: List all teddy bears
       tags:
       - teddy-bear
     post:
       consumes:
       - application/json
-      description: Add a teddy bear
+      description: Create a teddy bear
       parameters:
       - description: Teddy Bear Object
         in: body
@@ -304,7 +304,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Add a teddy bear
+      summary: Create a teddy bear
       tags:
       - teddy-bear
   /teddy-bear/{name}:
@@ -339,7 +339,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a teddy bear by name
+      description: Fetch a teddy bear by name
       parameters:
       - description: Teddy Bear Name
         in: path
@@ -361,7 +361,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.error'
-      summary: Get a teddy bear by name
+      summary: Fetch a teddy bear by name
       tags:
       - teddy-bear
     put:

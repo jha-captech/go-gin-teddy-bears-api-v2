@@ -25,8 +25,8 @@ func (router Router) teddyBear(r *gin.RouterGroup) {
 	r.DELETE("/:name", router.deleteTeddyBearByName)
 }
 
-// @Summary		Get all teddy bears
-// @Description	Get all teddy bears
+// @Summary		List all teddy bears
+// @Description	List all teddy bears
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json
@@ -52,8 +52,8 @@ func (router Router) listAllTeddyBears(c *gin.Context) {
 	)
 }
 
-// @Summary		Get a teddy bear by name
-// @Description	Get a teddy bear by name
+// @Summary		Fetch a teddy bear by name
+// @Description	Fetch a teddy bear by name
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json
@@ -144,8 +144,8 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 	)
 }
 
-// @Summary		Add a teddy bear
-// @Description	Add a teddy bear
+// @Summary		Create a teddy bear
+// @Description	Create a teddy bear
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json

@@ -40,7 +40,7 @@ const docTemplate = `{
         },
         "/location": {
             "get": {
-                "description": "Get all picnic locations",
+                "description": "List all picnic locations",
                 "consumes": [
                     "application/json"
                 ],
@@ -50,7 +50,7 @@ const docTemplate = `{
                 "tags": [
                     "location"
                 ],
-                "summary": "Get all picnic locations",
+                "summary": "List all picnic locations",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -67,7 +67,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Add a picnic location",
+                "description": "Create a picnic location",
                 "consumes": [
                     "application/json"
                 ],
@@ -77,7 +77,7 @@ const docTemplate = `{
                 "tags": [
                     "location"
                 ],
-                "summary": "Add a picnic location",
+                "summary": "Create a picnic location",
                 "parameters": [
                     {
                         "description": "Location Object",
@@ -113,7 +113,7 @@ const docTemplate = `{
         },
         "/location/{id}": {
             "get": {
-                "description": "Get a picnic location by id",
+                "description": "Fetch a picnic location by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -123,7 +123,7 @@ const docTemplate = `{
                 "tags": [
                     "location"
                 ],
-                "summary": "Get a picnic location by id",
+                "summary": "Fetch a picnic location by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -250,7 +250,7 @@ const docTemplate = `{
         },
         "/teddy-bear": {
             "get": {
-                "description": "Get all teddy bears",
+                "description": "List all teddy bears",
                 "consumes": [
                     "application/json"
                 ],
@@ -260,7 +260,7 @@ const docTemplate = `{
                 "tags": [
                     "teddy-bear"
                 ],
-                "summary": "Get all teddy bears",
+                "summary": "List all teddy bears",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -277,7 +277,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Add a teddy bear",
+                "description": "Create a teddy bear",
                 "consumes": [
                     "application/json"
                 ],
@@ -287,7 +287,7 @@ const docTemplate = `{
                 "tags": [
                     "teddy-bear"
                 ],
-                "summary": "Add a teddy bear",
+                "summary": "Create a teddy bear",
                 "parameters": [
                     {
                         "description": "Teddy Bear Object",
@@ -329,7 +329,7 @@ const docTemplate = `{
         },
         "/teddy-bear/{name}": {
             "get": {
-                "description": "Get a teddy bear by name",
+                "description": "Fetch a teddy bear by name",
                 "consumes": [
                     "application/json"
                 ],
@@ -339,7 +339,7 @@ const docTemplate = `{
                 "tags": [
                     "teddy-bear"
                 ],
-                "summary": "Get a teddy bear by name",
+                "summary": "Fetch a teddy bear by name",
                 "parameters": [
                     {
                         "type": "string",

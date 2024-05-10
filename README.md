@@ -10,7 +10,7 @@
 
 ### Database Setup
 ```bash
-make db_setup
+make db
 ```
 
 ## Running the Application
