@@ -96,20 +96,6 @@ VALUES
     ('100 Acre Wood', 30, 'East Sussex'),
     ('The Commons', 20, 'Coppell');
 
--- Insert data into picnic_participants table
-INSERT INTO
-    picnic_participants (picnic_id, teddy_bear_id)
-VALUES
-    (1, 1),
-    (1, 2),
-    (1, 4),
-    (1, 6),
-    (2, 1),
-    (2, 3),
-    (2, 4),
-    (2, 5),
-    (2, 6);
-
 -- Insert data into teddy_bears table
 INSERT INTO
     teddy_bears (
@@ -154,4 +140,116 @@ VALUES
         1,
         'Christopher Robin',
         'Red Shirt'
-    );
+    ),
+    (
+        'Paddington',
+        'Blue',
+        'Red',
+        1,
+        'Mrs. Brown',
+        'Marmalade lover'
+    ),
+    (
+        'Cocoa',
+        'Dark Brown',
+        'Beige',
+        1,
+        'Amelia',
+        'Chocoholic'
+    ),
+    (
+        'Honey',
+        'Gold',
+        'Yellow',
+        1,
+        'Penny',
+        'Sweet tooth'
+    ),
+    (
+        'Snuggles',
+        'Cream',
+        'Pink',
+        1,
+        'Lily',
+        'Loves hugs'
+    ),
+    ('Fuzzy', 'Gray', 'White', 1, 'Jack', 'Soft fur'),
+    ('Rosie', 'Pink', 'Purple', 1, 'Emily', 'Gentle'),
+    (
+        'Bubbles',
+        'White',
+        'Blue',
+        1,
+        'Oliver',
+        'Playful'
+    ),
+    ('Fluffy', 'White', 'Brown', 1, 'Sophie', 'Cute'),
+    ('Max', 'Black', 'Gray', 1, 'Ethan', 'Adventurous'),
+    ('Ollie', 'Brown', 'Green', 1, 'Mia', 'Energetic'),
+    (
+        'Ginger',
+        'Orange',
+        'Yellow',
+        1,
+        'Noah',
+        'Curious'
+    ),
+    ('Snowball', 'White', NULL, 1, 'Ava', 'Snowy'),
+    ('Caramel', 'Tan', 'Brown', 1, 'Liam', 'Sweet'),
+    ('Patch', 'Brown', 'Black', 1, 'Emma', 'Patchy');
+
+-- Insert data into picnic_participants table
+INSERT INTO
+    picnic_participants (picnic_id, teddy_bear_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 4),
+    (1, 6),
+    (1, 7),
+    (1, 8),
+    (1, 9),
+    (1, 10),
+    (2, 1),
+    (2, 3),
+    (2, 4),
+    (2, 5),
+    (2, 6),
+    (2, 7),
+    (2, 8),
+    (3, 1),
+    (3, 2),
+    (3, 4),
+    (3, 5),
+    (3, 6),
+    (3, 7),
+    (4, 1),
+    (4, 2),
+    (4, 3),
+    (4, 4),
+    (4, 5),
+    (4, 6),
+    (4, 7),
+    (4, 8),
+    (4, 9),
+    (4, 10),
+    (1, 11),
+    (1, 12),
+    (1, 13),
+    (1, 14),
+    (1, 15),
+    (1, 16),
+    (1, 17),
+    (1, 18),
+    (1, 19),
+    (1, 20),
+    (2, 9),
+    (2, 10),
+    (2, 11),
+    (2, 12),
+    (2, 13),
+    (2, 14),
+    (2, 15),
+    (2, 16),
+    (2, 17),
+    (2, 18);

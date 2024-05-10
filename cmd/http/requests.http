@@ -1,0 +1,83 @@
+### teddy-bear
+###
+GET http://localhost:9888/api/health-check
+###
+
+### teddy-bear
+###
+GET http://localhost:9888/api/teddy-bear/test
+###
+GET http://localhost:9888/api/teddy-bear
+###
+GET http://localhost:9888/api/teddy-bear/Teddy
+###
+PUT  http://localhost:9888/api/teddy-bear/Teddy
+content-type: application/json
+
+{
+    "id": 1,
+    "name": "Teddy",
+    "primary_color": "Brown",
+    "accent_color": "Green",
+    "is_dressed": true,
+    "owner_name": "Little Billy",
+    "characteristic": "The one true Teddy"
+}
+###
+POST http://localhost:9888/api/teddy-bear
+content-type: application/json
+
+{
+    "name": "Jonas",
+    "primary_color": "Blue",
+    "is_dressed": true,
+    "owner_name": "Bob",
+    "characteristic": "New bear on the block"
+}
+###
+PATCH http://localhost:9888/api/teddy-bear/Teddy
+content-type: application/json
+
+[
+    { 
+        "op": "test", 
+        "path": "/a/b/c", 
+        "value": "foo" 
+    }
+]
+
+###
+DELETE http://localhost:9888/api/teddy-bear/Jonas
+
+
+
+
+
+### location
+###
+GET http://localhost:9888/api/location/test
+###
+GET http://localhost:9888/api/location/
+###
+GET http://localhost:9888/api/location/1
+###
+PUT http://localhost:9888/api/location/1
+content-type: application/json
+
+{
+    "id": 1,
+    "location_name": "Big Wood",
+    "capacity": 91,
+    "municipality": "Oakwood"
+}
+
+###
+POST http://localhost:9888/api/location/
+content-type: application/json
+
+{
+    "id": 5,
+    "location_name": "Big Wood 2",
+    "capacity": 100,
+    "municipality": "Oakwood 2"
+}
