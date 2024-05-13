@@ -2,6 +2,7 @@ GO := @go
 GIN := @gin
 PACKAGE := teddy_bears_api_v2
 
+# SETUP
 
 .PHONY: db 
 db:

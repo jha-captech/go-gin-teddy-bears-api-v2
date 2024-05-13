@@ -18,6 +18,7 @@ func (r *Router) healthCheck(fr fiber.Router) {
 // @Success		200				{object}	routes.responseMessage
 // @Router		/health-check 	[GET]
 func (r *Router) runHealthCheck(c *fiber.Ctx) error {
-	return c.Status(http.StatusOK).
+	return c.
+		Status(http.StatusOK).
 		JSON(responseMessage{Message: "Health check response."})
 }
