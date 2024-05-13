@@ -3,7 +3,7 @@ package main
 import (
 	"log/slog"
 
-	"teddy_bears_api_v2/cmd/http/routes"
+	"teddy_bears_api_v2/cmd/gin/routes"
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/logic"
 
@@ -17,7 +17,7 @@ func main() {
 }
 
 func Execute() {
-	slog.Info("running http.main()")
+	slog.Info("running gin.main()")
 
 	config.LoggerInit()
 	config.DotEnvInit()

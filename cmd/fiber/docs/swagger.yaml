@@ -1,0 +1,429 @@
+definitions:
+  models.PicnicLocation:
+    properties:
+      capacity:
+        type: integer
+      id:
+        type: integer
+      location_name:
+        type: string
+      municipality:
+        type: string
+    type: object
+  models.PicnicLocationInput:
+    properties:
+      capacity:
+        type: integer
+      location_name:
+        type: string
+      municipality:
+        type: string
+    type: object
+  models.TeddyBearInput:
+    properties:
+      accent_color:
+        type: string
+      characteristic:
+        type: string
+      is_dressed:
+        type: boolean
+      name:
+        type: string
+      owner_name:
+        type: string
+      picnic_ids:
+        items:
+          type: integer
+        type: array
+      primary_color:
+        type: string
+    type: object
+  models.TeddyBearReturn:
+    properties:
+      accent_color:
+        type: string
+      characteristic:
+        type: string
+      id:
+        type: integer
+      is_dressed:
+        type: boolean
+      name:
+        type: string
+      owner_name:
+        type: string
+      picnic_ids:
+        items:
+          type: integer
+        type: array
+      primary_color:
+        type: string
+    type: object
+  routes.responseAllLocation:
+    properties:
+      locations:
+        items:
+          $ref: '#/definitions/models.PicnicLocation'
+        type: array
+    type: object
+  routes.responseAllTeddyBear:
+    properties:
+      locations:
+        items:
+          $ref: '#/definitions/models.TeddyBearReturn'
+        type: array
+    type: object
+  routes.responseError:
+    properties:
+      error:
+        type: string
+    type: object
+  routes.responseID:
+    properties:
+      object_id:
+        type: integer
+    type: object
+  routes.responseMessage:
+    properties:
+      message:
+        type: string
+    type: object
+  routes.responseOneLocation:
+    properties:
+      location:
+        $ref: '#/definitions/models.PicnicLocation'
+    type: object
+  routes.responseOneTeddyBear:
+    properties:
+      location:
+        $ref: '#/definitions/models.TeddyBearReturn'
+    type: object
+info:
+  contact: {}
+paths:
+  /health-check:
+    get:
+      consumes:
+      - application/json
+      description: Health check response
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseMessage'
+      summary: Health check response
+      tags:
+      - health-check
+  /location:
+    get:
+      consumes:
+      - application/json
+      description: List all picnic locations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseAllLocation'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: List all picnic locations
+      tags:
+      - location
+    post:
+      consumes:
+      - application/json
+      description: Create a picnic location
+      parameters:
+      - description: Location Object
+        in: body
+        name: location
+        required: true
+        schema:
+          $ref: '#/definitions/models.PicnicLocationInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.responseID'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Create a picnic location
+      tags:
+      - location
+  /location/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a location by id
+      parameters:
+      - description: Location ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/routes.responseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Delete a location by id
+      tags:
+      - location
+    get:
+      consumes:
+      - application/json
+      description: Fetch a picnic location by id
+      parameters:
+      - description: Location ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseOneLocation'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Fetch a picnic location by id
+      tags:
+      - location
+    put:
+      consumes:
+      - application/json
+      description: Update a picnic location by id
+      parameters:
+      - description: Location ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Location Object
+        in: body
+        name: location
+        required: true
+        schema:
+          $ref: '#/definitions/models.PicnicLocationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseOneLocation'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Update a picnic location by id
+      tags:
+      - location
+  /teddy-bear:
+    get:
+      consumes:
+      - application/json
+      description: List all teddy bears
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseAllTeddyBear'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: List all teddy bears
+      tags:
+      - teddy-bear
+    post:
+      consumes:
+      - application/json
+      description: Create a teddy bear
+      parameters:
+      - description: Teddy Bear Object
+        in: body
+        name: teddyBear
+        required: true
+        schema:
+          $ref: '#/definitions/models.TeddyBearInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.responseID'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Create a teddy bear
+      tags:
+      - teddy-bear
+  /teddy-bear/{name}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a teddy bear by name
+      parameters:
+      - description: Teddy Bear Name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/routes.responseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Delete a teddy bear by name
+      tags:
+      - teddy-bear
+    get:
+      consumes:
+      - application/json
+      description: Fetch a teddy bear by name
+      parameters:
+      - description: Teddy Bear Name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseOneTeddyBear'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Fetch a teddy bear by name
+      tags:
+      - teddy-bear
+    put:
+      consumes:
+      - application/json
+      description: Update a teddy bear by name
+      parameters:
+      - description: Teddy Bear Name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Teddy Bear Object
+        in: body
+        name: teddyBear
+        required: true
+        schema:
+          $ref: '#/definitions/models.TeddyBearInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseOneTeddyBear'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/routes.responseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: Update a teddy bear by name
+      tags:
+      - teddy-bear
+  /teddy-bear/paginated:
+    get:
+      consumes:
+      - application/json
+      description: List all teddy bears with page and limit
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Items per page (default 10, max 15)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseAllTeddyBear'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: List all teddy bears with page and limit
+      tags:
+      - teddy-bear
+swagger: "2.0"

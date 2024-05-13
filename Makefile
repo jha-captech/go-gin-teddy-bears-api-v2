@@ -10,19 +10,33 @@ db:
 
 .PHONY: goinstall
 goinstall:
-
 	${GO} get .
 
-.PHONY: http_dev
-http_dev:
-	swag init --parseDependency --generalInfo ".\..\main.go" --dir "cmd\http\routes" --output "cmd\http\docs" 
-	
-	${GO} run ./cmd/http
+
+# GIN
 
 
-.PHONY: http_test
-http_test:
+.PHONY: gin_dev
+gin_dev:
+	swag init --parseDependency --generalInfo ".\..\main.go" --dir "cmd\gin\routes" --output "cmd\gin\docs" 
+	${GO} run ./cmd/gin
+
+
+.PHONY: gin_test
+gin_test:
 	${GO} test ${PACKAGE} -v
+
+
+# FIBER
+
+
+.PHONY: fiber_dev
+fiber_dev:
+	swag init --parseDependency --generalInfo ".\..\main.go" --dir "cmd\fiber\routes" --output "cmd\fiber\docs" 
+	${GO} run ./cmd/fiber
+
+
+# CLI
 
 
 .PHONY: cli_dev_location_list

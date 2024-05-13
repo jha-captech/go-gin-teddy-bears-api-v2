@@ -30,6 +30,34 @@ func (logic Logic) ListTeddyBears() ([]m.TeddyBearReturn, error) {
 	return bearsReturn, nil
 }
 
+func (logic Logic) ListPaginatedTeddyBears(
+	page, limit int,
+) ([]m.TeddyBearReturn, error) {
+	var bears []m.TeddyBear
+	offset := (page - 1) * limit
+	err := logic.Db.
+		Model(&m.TeddyBear{}).
+		Preload("Picnics").
+		Offset(offset).
+		Limit(limit).
+		Find(&bears).
+		Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, fmt.Errorf(
+			"error retrieving paginated teddy bears: %s",
+			err,
+		)
+	}
+
+	var bearsReturn []m.TeddyBearReturn
+	for _, bear := range bears {
+		bearReturn := m.MapTeddyBearToOutput(bear)
+		bearsReturn = append(bearsReturn, bearReturn)
+	}
+
+	return bearsReturn, nil
+}
+
 func (logic Logic) FetchTeddyBearByName(
 	name string,
 ) (*m.TeddyBearReturn, error) {

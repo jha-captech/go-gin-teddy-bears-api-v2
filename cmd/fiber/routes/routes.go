@@ -4,7 +4,7 @@ import (
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/logic"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 
 	_ "teddy_bears_api_v2/models" // needed for swaggo to identify model types
 )
@@ -22,17 +22,17 @@ type responseID struct {
 	ObjectID int `json:"object_id"`
 }
 
-type error struct {
+type responseError struct {
 	Error string `json:"error"`
 }
 
-func InitRouter(app *gin.Engine, router *Router) {
-	r := app.Group("api")
+func (r *Router) InitRouter(app *fiber.App) {
+	appGroup := app.Group("/api")
 
-	router.healthCheck(r.Group("health-check"))
+	r.healthCheck(appGroup.Group("/health-check"))
 
-	router.location(r.Group("location"))
-	router.teddyBear(r.Group("teddy-bear"))
+	r.location(appGroup.Group("/location"))
+	r.teddyBear(appGroup.Group("/teddy-bear"))
 
-	router.swagger(app)
+	r.swagger(app)
 }

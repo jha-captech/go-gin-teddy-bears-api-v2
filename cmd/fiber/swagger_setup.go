@@ -1,7 +1,7 @@
 package main
 
 import (
-	"teddy_bears_api_v2/cmd/http/docs"
+	"teddy_bears_api_v2/cmd/gin/docs"
 	"teddy_bears_api_v2/config"
 )
 

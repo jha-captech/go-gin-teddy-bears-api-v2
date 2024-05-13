@@ -3,11 +3,14 @@ package routes
 import (
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"teddy_bears_api_v2/models"
 
 	"github.com/gin-gonic/gin"
 )
+
+const MaxLimit = 15
 
 type responseOneTeddyBear struct {
 	TeddyBear *models.TeddyBearReturn `json:"location"`
@@ -19,6 +22,7 @@ type responseAllTeddyBear struct {
 
 func (router Router) teddyBear(r *gin.RouterGroup) {
 	r.GET("/", router.listAllTeddyBears)
+	r.GET("/paginated", router.listPaginatedTeddyBears)
 	r.GET("/:name", router.fetchTeddyBearByName)
 	r.PUT("/:name", router.updateTeddyBearByName)
 	r.POST("/", router.createTeddyBear)
@@ -31,7 +35,7 @@ func (router Router) teddyBear(r *gin.RouterGroup) {
 // @Accept		json
 // @Produce		json
 // @Success		200			{object}	routes.responseAllTeddyBear
-// @Failure		500			{object}	routes.error
+// @Failure		500			{object}	routes.responseError
 // @Router		/teddy-bear [GET]
 func (router Router) listAllTeddyBears(c *gin.Context) {
 	// get values from db
@@ -40,12 +44,58 @@ func (router Router) listAllTeddyBears(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error retrieving data"},
+			responseError{Error: "Error retrieving data"},
 		)
 		return
 	}
 
 	// return response
+	c.JSON(
+		http.StatusOK,
+		responseAllTeddyBear{TeddyBears: bears},
+	)
+}
+
+// @Summary		List all teddy bears with page and limit
+// @Description	List all teddy bears with page and limit
+// @Tags		teddy-bear
+// @Accept		json
+// @Produce		json
+// @Param		page		query		int	false	"Page number (default 1)"
+// @Param		limit		query		int	false	"Items per page (default 10, max 15)"
+// @Success		200			{object}	routes.responseAllTeddyBear
+// @Failure		500			{object}	routes.responseError
+// @Router		/teddy-bear/paginated 	[GET]
+func (router Router) listPaginatedTeddyBears(c *gin.Context) {
+	// Parse query parameters
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+
+	// Validate pagination parameters
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	} else if limit > MaxLimit {
+		limit = MaxLimit
+	}
+
+	// Calculate offset
+	offset := (page - 1) * limit
+
+	// Get paginated teddy bears from the database
+	bears, err := router.Logic.ListPaginatedTeddyBears(offset, limit)
+	if err != nil {
+		slog.Error("error getting paginated teddy bears", "error", err)
+		c.JSON(
+			http.StatusInternalServerError,
+			responseError{Error: "Error retrieving data"},
+		)
+		return
+	}
+
+	// Return paginated response
 	c.JSON(
 		http.StatusOK,
 		responseAllTeddyBear{TeddyBears: bears},
@@ -59,8 +109,8 @@ func (router Router) listAllTeddyBears(c *gin.Context) {
 // @Produce		json
 // @Param		name				path		string	true	"Teddy Bear Name"
 // @Success		200					{object}	routes.responseOneTeddyBear
-// @Failure		400					{object}	routes.error
-// @Failure		500					{object}	routes.error
+// @Failure		400					{object}	routes.responseError
+// @Failure		500					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[GET]
 func (router Router) fetchTeddyBearByName(c *gin.Context) {
 	// get and validate name
@@ -69,7 +119,7 @@ func (router Router) fetchTeddyBearByName(c *gin.Context) {
 		slog.Error("error not a valid name")
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid name"},
+			responseError{Error: "Not a valid name"},
 		)
 		return
 	}
@@ -80,7 +130,7 @@ func (router Router) fetchTeddyBearByName(c *gin.Context) {
 		slog.Error("error getting bear by name", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error retrieving data"},
+			responseError{Error: "Error retrieving data"},
 		)
 		return
 	}
@@ -100,8 +150,8 @@ func (router Router) fetchTeddyBearByName(c *gin.Context) {
 // @Param		name				path		string	true	"Teddy Bear Name"
 // @Param		teddyBear			body		models.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		200					{object}	routes.responseOneTeddyBear
-// @Failure		500					{object}	routes.error
-// @Failure		422					{object}	routes.error
+// @Failure		500					{object}	routes.responseError
+// @Failure		422					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[PUT]
 func (router Router) updateTeddyBearByName(c *gin.Context) {
 	// get and validate name
@@ -110,7 +160,7 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 		slog.Error("error not a valid name")
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid name"},
+			responseError{Error: "Not a valid name"},
 		)
 		return
 	}
@@ -121,7 +171,7 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "missing values or malformed body"},
+			responseError{Error: "missing values or malformed body"},
 		)
 		return
 	}
@@ -132,7 +182,7 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 		slog.Error("error getting bear by name", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error retrieving data"},
+			responseError{Error: "Error retrieving data"},
 		)
 		return
 	}
@@ -151,9 +201,9 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 // @Produce		json
 // @Param		teddyBear	body		models.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		201			{object}	routes.responseID
-// @Failure		422			{object}	routes.error
-// @Failure		500			{object}	routes.error
-// @Failure		409			{object}	routes.error
+// @Failure		422			{object}	routes.responseError
+// @Failure		500			{object}	routes.responseError
+// @Failure		409			{object}	routes.responseError
 // @Router		/teddy-bear	[POST]
 func (router Router) createTeddyBear(c *gin.Context) {
 	// get and validate body as object
@@ -162,7 +212,7 @@ func (router Router) createTeddyBear(c *gin.Context) {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "missing values or malformed body"},
+			responseError{Error: "missing values or malformed body"},
 		)
 		return
 	}
@@ -173,7 +223,7 @@ func (router Router) createTeddyBear(c *gin.Context) {
 		slog.Error("error adding teddy bear", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error updating data"},
+			responseError{Error: "Error updating data"},
 		)
 		return
 	}
@@ -192,8 +242,8 @@ func (router Router) createTeddyBear(c *gin.Context) {
 // @Produce		json
 // @Param		name				path		string	true	"Teddy Bear Name"
 // @Success		202					{object}	routes.responseMessage
-// @Failure		500					{object}	routes.error
-// @Failure		404					{object}	routes.error
+// @Failure		500					{object}	routes.responseError
+// @Failure		404					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[DELETE]
 func (router Router) deleteTeddyBearByName(c *gin.Context) {
 	// get and validate name
@@ -202,7 +252,7 @@ func (router Router) deleteTeddyBearByName(c *gin.Context) {
 		slog.Error("error not a valid name")
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid name"},
+			responseError{Error: "Not a valid name"},
 		)
 		return
 	}
@@ -212,7 +262,7 @@ func (router Router) deleteTeddyBearByName(c *gin.Context) {
 		slog.Error("error deleting resource", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error adding data"},
+			responseError{Error: "Error adding data"},
 		)
 		return
 	}

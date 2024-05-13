@@ -32,7 +32,7 @@ func (router Router) location(r *gin.RouterGroup) {
 // @Accept		json
 // @Produce		json
 // @Success		200			{object}	routes.responseAllLocation
-// @Failure		500			{object}	routes.error
+// @Failure		500			{object}	routes.responseError
 // @Router		/location 	[GET]
 func (router Router) listAllLocations(c *gin.Context) {
 	// get values from db
@@ -41,7 +41,7 @@ func (router Router) listAllLocations(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error retrieving data"},
+			responseError{Error: "Error retrieving data"},
 		)
 		return
 	}
@@ -60,8 +60,8 @@ func (router Router) listAllLocations(c *gin.Context) {
 // @Produce		json
 // @Param		id				path		int	true	"Location ID"
 // @Success		200				{object}	routes.responseOneLocation
-// @Failure		400				{object}	routes.error
-// @Failure		500				{object}	routes.error
+// @Failure		400				{object}	routes.responseError
+// @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[GET]
 func (router Router) fetchLocationById(c *gin.Context) {
 	// get and validate id
@@ -71,7 +71,7 @@ func (router Router) fetchLocationById(c *gin.Context) {
 		slog.Error("error getting id", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid id"},
+			responseError{Error: "Not a valid id"},
 		)
 		return
 	}
@@ -82,7 +82,7 @@ func (router Router) fetchLocationById(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error retrieving data"},
+			responseError{Error: "Error retrieving data"},
 		)
 		return
 	}
@@ -102,8 +102,8 @@ func (router Router) fetchLocationById(c *gin.Context) {
 // @Param		id				path		int							true	"Location ID"
 // @Param		location		body		models.PicnicLocationInput	true	"Location Object"
 // @Success		200				{object}	routes.responseOneLocation
-// @Failure		400				{object}	routes.error
-// @Failure		500				{object}	routes.error
+// @Failure		400				{object}	routes.responseError
+// @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[PUT]
 func (router Router) updateLocationById(c *gin.Context) {
 	// get and validate id
@@ -113,7 +113,7 @@ func (router Router) updateLocationById(c *gin.Context) {
 		slog.Error("error getting id", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid id"},
+			responseError{Error: "Not a valid id"},
 		)
 		return
 	}
@@ -124,7 +124,7 @@ func (router Router) updateLocationById(c *gin.Context) {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "missing values or malformed body"},
+			responseError{Error: "missing values or malformed body"},
 		)
 		return
 	}
@@ -135,7 +135,7 @@ func (router Router) updateLocationById(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error updating data"},
+			responseError{Error: "Error updating data"},
 		)
 		return
 	}
@@ -154,8 +154,8 @@ func (router Router) updateLocationById(c *gin.Context) {
 // @Produce		json
 // @Param		location	body		models.PicnicLocationInput	true	"Location Object"
 // @Success		201			{object}	routes.responseID
-// @Failure		400			{object}	routes.error
-// @Failure		500			{object}	routes.error
+// @Failure		400			{object}	routes.responseError
+// @Failure		500			{object}	routes.responseError
 // @Router		/location	[POST]
 func (router Router) createLocation(c *gin.Context) {
 	// get and validate body as object
@@ -164,7 +164,7 @@ func (router Router) createLocation(c *gin.Context) {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "missing values or malformed body"},
+			responseError{Error: "missing values or malformed body"},
 		)
 		return
 	}
@@ -175,7 +175,7 @@ func (router Router) createLocation(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error updating data"},
+			responseError{Error: "Error updating data"},
 		)
 		return
 	}
@@ -194,8 +194,8 @@ func (router Router) createLocation(c *gin.Context) {
 // @Produce		json
 // @Param		id				path		int	true	"Location ID"
 // @Success		202				{object}	routes.responseMessage
-// @Failure		500				{object}	routes.error
-// @Failure		400				{object}	routes.error
+// @Failure		500				{object}	routes.responseError
+// @Failure		400				{object}	routes.responseError
 // @Router		/location/{id} 	[DELETE]
 func (router Router) deleteLocationById(c *gin.Context) {
 	// get and validate id
@@ -205,7 +205,7 @@ func (router Router) deleteLocationById(c *gin.Context) {
 		slog.Error("error getting id", "error", err)
 		c.JSON(
 			http.StatusBadRequest,
-			error{Error: "Not a valid id"},
+			responseError{Error: "Not a valid id"},
 		)
 		return
 	}
@@ -215,7 +215,7 @@ func (router Router) deleteLocationById(c *gin.Context) {
 		slog.Error("error getting all locations", "error", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			error{Error: "Error adding data"},
+			responseError{Error: "Error adding data"},
 		)
 		return
 	}

@@ -15,7 +15,12 @@ make db
 
 ## Running the Application
 
-### http dev
+### gin dev
 ```bash
-make http_dev
+make gin_dev
+```
+
+### fiber dev
+```bash
+make fiber_dev
 ```
