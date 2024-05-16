@@ -7,6 +7,8 @@ import (
 	"teddy_bears_api_v2/cmd/cli/actions"
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/logic"
+
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -19,17 +21,13 @@ func Execute() {
 	config := config.HydrateConfigFromEnv()
 
 	// logic setup
-	dbSetup := logic.SqliteOpen(config)
-	logic, err := logic.InitLogic(config, dbSetup)
+	logic, err := logic.InitLogic(config, logic.SqliteOpen, &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
 	// a struct setup
-	a := &actions.Actions{
-		Logic:  logic,
-		Config: config,
-	}
+	a := &actions.Actions{Logic: logic, Config: config}
 
 	app := actions.InitActions(a)
 

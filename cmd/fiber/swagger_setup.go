@@ -6,8 +6,8 @@ import (
 )
 
 func SwaggerInit(config *config.Config) {
-	docs.SwaggerInfo.Title = "Teddy Bears Go Gin API"
-	docs.SwaggerInfo.Description = "Practice Go Gin API using data from .Net Tech Challenge"
+	docs.SwaggerInfo.Title = "Teddy Bears Go Fiber API"
+	docs.SwaggerInfo.Description = "Practice Go Fiber API using data from .Net Tech Challenge"
 	docs.SwaggerInfo.Version = "1.0"
 
 	docs.SwaggerInfo.Host = config.HTTP.Domain + config.HTTP.Port

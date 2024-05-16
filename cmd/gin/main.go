@@ -8,9 +8,8 @@ import (
 	"teddy_bears_api_v2/logic"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
-// TODO add docker compatibility
 
 func main() {
 	Execute()
@@ -26,17 +25,13 @@ func Execute() {
 	SwaggerInit(config)
 
 	// logic setup
-	dbSetup := logic.SqliteOpen(config)
-	logic, err := logic.InitLogic(config, dbSetup)
+	logic, err := logic.InitLogic(config, logic.SqliteOpen, &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
 	// router struct setup
-	router := &routes.Router{
-		Logic:  logic,
-		Config: config,
-	}
+	router := &routes.Router{Logic: logic, Config: config}
 
 	// setup app
 	app := gin.Default()

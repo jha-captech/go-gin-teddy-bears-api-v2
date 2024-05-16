@@ -11,11 +11,12 @@ type GoEnv struct {
 }
 
 type Database struct {
-	Name     string
-	User     string
-	Password string
-	Host     string
-	Port     string
+	Name            string
+	User            string
+	Password        string
+	Host            string
+	Port            string
+	ConnectionRetry int
 }
 
 type HTTP struct {
