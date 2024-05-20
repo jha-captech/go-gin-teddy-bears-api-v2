@@ -59,11 +59,6 @@ definitions:
       primary_color:
         type: string
     type: object
-  routes.error:
-    properties:
-      error:
-        type: string
-    type: object
   routes.responseAllLocation:
     properties:
       locations:
@@ -77,6 +72,11 @@ definitions:
         items:
           $ref: '#/definitions/models.TeddyBearReturn'
         type: array
+    type: object
+  routes.responseError:
+    properties:
+      error:
+        type: string
     type: object
   routes.responseID:
     properties:
@@ -131,7 +131,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: List all picnic locations
       tags:
       - location
@@ -156,11 +156,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Create a picnic location
       tags:
       - location
@@ -185,11 +185,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Delete a location by id
       tags:
       - location
@@ -213,11 +213,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Fetch a picnic location by id
       tags:
       - location
@@ -247,11 +247,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Update a picnic location by id
       tags:
       - location
@@ -270,7 +270,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: List all teddy bears
       tags:
       - teddy-bear
@@ -295,15 +295,15 @@ paths:
         "409":
           description: Conflict
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Create a teddy bear
       tags:
       - teddy-bear
@@ -328,11 +328,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Delete a teddy bear by name
       tags:
       - teddy-bear
@@ -356,11 +356,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Fetch a teddy bear by name
       tags:
       - teddy-bear
@@ -390,12 +390,40 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/routes.error'
+            $ref: '#/definitions/routes.responseError'
       summary: Update a teddy bear by name
+      tags:
+      - teddy-bear
+  /teddy-bear/paginated:
+    get:
+      consumes:
+      - application/json
+      description: List all teddy bears with page and limit
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Items per page (default 10, max 15)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.responseAllTeddyBear'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.responseError'
+      summary: List all teddy bears with page and limit
       tags:
       - teddy-bear
 swagger: "2.0"

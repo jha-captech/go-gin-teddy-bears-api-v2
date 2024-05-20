@@ -5,12 +5,14 @@ import (
 
 	"teddy_bears_api_v2/cmd/gin/routes"
 	"teddy_bears_api_v2/config"
+	"teddy_bears_api_v2/database"
 	"teddy_bears_api_v2/logic"
 
-	"github.com/gin-gonic/gin"
-)
+	"github.com/glebarez/sqlite"
 
-// TODO add docker compatibility
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
 
 func main() {
 	Execute()
@@ -25,18 +27,25 @@ func Execute() {
 
 	SwaggerInit(config)
 
+	// database connect
+	db, err := database.Connect(
+		config,
+		sqlite.Open(config.Database.Name),
+		gorm.Config{},
+		config.Database.ConnectionRetry,
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	// logic setup
-	dbSetup := logic.SqliteOpen(config)
-	logic, err := logic.InitLogic(config, dbSetup)
+	logic, err := logic.InitLogic(db)
 	if err != nil {
 		panic(err)
 	}
 
 	// router struct setup
-	router := &routes.Router{
-		Logic:  logic,
-		Config: config,
-	}
+	router := &routes.Router{Logic: logic, Config: config}
 
 	// setup app
 	app := gin.Default()

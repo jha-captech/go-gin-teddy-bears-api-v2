@@ -61,7 +61,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -99,13 +99,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -143,13 +143,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -194,13 +194,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -236,13 +236,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -271,7 +271,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -309,19 +309,62 @@ const docTemplate = `{
                     "409": {
                         "description": "Conflict",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/teddy-bear/paginated": {
+            "get": {
+                "description": "List all teddy bears with page and limit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teddy-bear"
+                ],
+                "summary": "List all teddy bears with page and limit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page (default 10, max 15)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.responseAllTeddyBear"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -359,13 +402,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -410,13 +453,13 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -452,13 +495,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/routes.error"
+                            "$ref": "#/definitions/routes.responseError"
                         }
                     }
                 }
@@ -558,14 +601,6 @@ const docTemplate = `{
                 }
             }
         },
-        "routes.error": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
         "routes.responseAllLocation": {
             "type": "object",
             "properties": {
@@ -585,6 +620,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.TeddyBearReturn"
                     }
+                }
+            }
+        },
+        "routes.responseError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
                 }
             }
         },
