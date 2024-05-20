@@ -7,6 +7,9 @@ import (
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/logic"
 
+	"teddy_bears_api_v2/database"
+
+	"github.com/glebarez/sqlite"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"gorm.io/gorm"
@@ -25,8 +28,19 @@ func Execute() {
 
 	SwaggerInit(config)
 
+	// database connect
+	db, err := database.Connect(
+		config,
+		sqlite.Open(config.Database.Name),
+		gorm.Config{},
+		config.Database.ConnectionRetry,
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	// logic setup
-	logic, err := logic.InitLogic(config, logic.SqliteOpen, &gorm.Config{})
+	logic, err := logic.InitLogic(db)
 	if err != nil {
 		panic(err)
 	}
