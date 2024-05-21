@@ -1,35 +1,28 @@
 package config
 
 import (
-	"os"
-	"strconv"
+	"fmt"
+	"strings"
+
+	"github.com/spf13/viper"
 )
 
-func HydrateConfigFromEnv() *Config {
-	return &Config{
-		GoEnv: &GoEnv{
-			Env: os.Getenv("GO_ENV"),
-		},
-		Database: &Database{
-			User:            os.Getenv("DB_USER"),
-			Password:        os.Getenv("DB_PASSWORD"),
-			Host:            os.Getenv("DB_HOST"),
-			Port:            os.Getenv("DB_PORT"),
-			Name:            os.Getenv("DB_NAME"),
-			ConnectionRetry: getEnvVarAsInt("DB_CONNECTION_RETRY", 0),
-		},
-		HTTP: &HTTP{
-			Domain: os.Getenv("GO_DOMAIN"),
-			Port:   os.Getenv("GO_PORT"),
-		},
-	}
-}
+func HydrateConfigFromEnv() (Configuration, error) {
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-func getEnvVarAsInt(key string, devVal int) int {
-	value := os.Getenv(key)
-	number, err := strconv.Atoi(value)
-	if err != nil {
-		return devVal
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return Configuration{}, fmt.Errorf("unable to decode config file, %v", err)
 	}
-	return number
+
+	config := Configuration{}
+	if err := viper.Unmarshal(&config); err != nil {
+		return Configuration{}, fmt.Errorf("unable to decode config file into configuration, %v", err)
+	}
+
+	return config, nil
 }

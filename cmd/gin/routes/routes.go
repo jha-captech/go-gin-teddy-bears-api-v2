@@ -11,7 +11,7 @@ import (
 
 type Router struct {
 	Logic  *logic.Logic
-	Config *config.Config
+	Config config.Configuration
 }
 
 type responseMessage struct {

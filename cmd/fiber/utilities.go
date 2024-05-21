@@ -11,7 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func printAllRoutes(app *fiber.App, config *config.Config) {
+func printAllRoutes(app *fiber.App, config config.Configuration) {
 	slog.Info("Registered endpoints:\n")
 
 	writer := tabwriter.NewWriter(

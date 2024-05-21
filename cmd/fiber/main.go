@@ -5,10 +5,12 @@ import (
 
 	"teddy_bears_api_v2/cmd/fiber/routes"
 	"teddy_bears_api_v2/config"
+	"teddy_bears_api_v2/database"
 	"teddy_bears_api_v2/logic"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -21,12 +23,26 @@ func Execute() {
 
 	config.LoggerInit()
 	config.DotEnvInit()
-	config := config.HydrateConfigFromEnv()
+	config, err := config.HydrateConfigFromEnv()
+	if err != nil {
+		panic(err)
+	}
 
 	SwaggerInit(config)
 
+	// database connect
+	db, err := database.Connect(
+		config,
+		sqlite.Open(config.Database.Name),
+		gorm.Config{},
+		config.Database.ConnectionRetry,
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	// logic setup
-	logic, err := logic.InitLogic(config, logic.SqliteOpen, &gorm.Config{})
+	logic, err := logic.InitLogic(db)
 	if err != nil {
 		panic(err)
 	}

@@ -9,7 +9,7 @@ import (
 
 type Actions struct {
 	Logic  *logic.Logic
-	Config *config.Config
+	Config config.Configuration
 }
 
 // TODO: Add struct/slice to JSON generic converter
