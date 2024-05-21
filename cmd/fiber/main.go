@@ -8,12 +8,9 @@ import (
 	"teddy_bears_api_v2/database"
 	"teddy_bears_api_v2/logic"
 
-	"teddy_bears_api_v2/database"
-
 	"github.com/glebarez/sqlite"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 

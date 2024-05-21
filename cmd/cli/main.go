@@ -37,17 +37,6 @@ func Execute() {
 		panic(err)
 	}
 
-	// database connect
-	db, err := database.Connect(
-		config,
-		sqlite.Open(config.Database.Name),
-		gorm.Config{},
-		config.Database.ConnectionRetry,
-	)
-	if err != nil {
-		panic(err)
-	}
-
 	// logic setup
 	logic, err := logic.InitLogic(db)
 	if err != nil {
