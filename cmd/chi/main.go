@@ -2,16 +2,18 @@ package main
 
 import (
 	"log/slog"
+	"net/http"
 	"strings"
 
-	"teddy_bears_api_v2/cmd/fiber/routes"
+	"teddy_bears_api_v2/cmd/chi/routes"
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/database"
 	"teddy_bears_api_v2/logic"
 
 	"github.com/glebarez/sqlite"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"gorm.io/gorm"
 )
 
@@ -20,9 +22,10 @@ func main() {
 }
 
 func Execute() {
+	config.LoggerInit()
+
 	slog.Info("running http.main()")
 
-	config.LoggerInit()
 	config.DotEnvInit()
 	config, err := config.HydrateConfigFromEnv()
 	if err != nil {
@@ -49,13 +52,13 @@ func Execute() {
 	}
 
 	// router struct setup
-	router := &routes.Router{Logic: logic, Config: config}
+	router := &routes.Handler{Logic: logic, Config: config}
 
 	// setup app
-	app := fiber.New()
+	app := chi.NewRouter()
 
 	// set middleware
-	app.Use(logger.New())
+	app.Use(middleware.Logger)
 
 	// setup routes
 	router.InitRouter(app)
@@ -65,6 +68,5 @@ func Execute() {
 		printAllRoutes(app, config)
 	}
 
-	err = app.Listen(config.HTTP.Port)
-	slog.Error("app encountered an error", "err", err)
+	http.ListenAndServe(config.HTTP.Port, app)
 }

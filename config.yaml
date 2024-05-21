@@ -1,5 +1,4 @@
-go_env:
-  env: ${GO_ENV}
+env: ${ENV}
 
 database:
   name: ${DATABASE_NAME}
