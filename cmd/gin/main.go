@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"strings"
 
 	"teddy_bears_api_v2/cmd/gin/routes"
 	"teddy_bears_api_v2/config"
@@ -54,7 +55,7 @@ func Execute() {
 	app := gin.Default()
 
 	// set env mode
-	switch config.GoEnv.Env {
+	switch strings.ToLower(config.Env) {
 	case "dev":
 		slog.Info("env set to dev")
 		gin.SetMode(gin.DebugMode)

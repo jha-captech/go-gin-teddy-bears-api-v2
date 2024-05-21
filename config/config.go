@@ -1,13 +1,9 @@
 package config
 
 type Configuration struct {
-	GoEnv    *GoEnv
-	Database *Database
-	HTTP     *HTTP
-}
-
-type GoEnv struct {
-	Env string
+	Env      string
+	Database Database
+	HTTP     HTTP
 }
 
 type Database struct {

@@ -37,6 +37,15 @@ fiber_dev:
 	${GO} run ./cmd/fiber
 
 
+# CHI
+
+
+.PHONY: chi_dev
+chi_dev:
+	swag init --parseDependency --generalInfo ".\..\main.go" --dir "cmd\chi\routes" --output "cmd\chi\docs" 
+	${GO} run ./cmd/chi
+
+
 # CLI
 
 
