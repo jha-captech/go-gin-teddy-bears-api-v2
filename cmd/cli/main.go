@@ -10,6 +10,7 @@ import (
 	"teddy_bears_api_v2/logic"
 
 	"github.com/glebarez/sqlite"
+
 	"gorm.io/gorm"
 )
 
@@ -20,7 +21,21 @@ func main() {
 func Execute() {
 	config.LoggerInit()
 	config.DotEnvInit()
-	config := config.HydrateConfigFromEnv()
+	config, err := config.HydrateConfigFromEnv()
+	if err != nil {
+		panic(err)
+	}
+
+	// database connect
+	db, err := database.Connect(
+		config,
+		sqlite.Open(config.Database.Name),
+		gorm.Config{},
+		config.Database.ConnectionRetry,
+	)
+	if err != nil {
+		panic(err)
+	}
 
 	// database connect
 	db, err := database.Connect(

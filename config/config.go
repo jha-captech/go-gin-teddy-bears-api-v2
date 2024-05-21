@@ -1,6 +1,6 @@
 package config
 
-type Config struct {
+type Configuration struct {
 	GoEnv    *GoEnv
 	Database *Database
 	HTTP     *HTTP

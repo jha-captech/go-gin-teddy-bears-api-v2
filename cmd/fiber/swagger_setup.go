@@ -5,7 +5,7 @@ import (
 	"teddy_bears_api_v2/config"
 )
 
-func SwaggerInit(config *config.Config) {
+func SwaggerInit(config config.Configuration) {
 	docs.SwaggerInfo.Title = "Teddy Bears Go Fiber API"
 	docs.SwaggerInfo.Description = "Practice Go Fiber API using data from .Net Tech Challenge"
 	docs.SwaggerInfo.Version = "1.0"

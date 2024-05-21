@@ -11,7 +11,7 @@ import (
 
 func (logic Logic) ListLocations() ([]m.PicnicLocation, error) {
 	var locations []m.PicnicLocation
-	if err := logic.Db.Find(&locations).Error; err != nil {
+	if err := logic.DB.Find(&locations).Error; err != nil {
 		return nil, fmt.Errorf("error retrieving picnic locations: %s", err)
 	}
 
@@ -20,7 +20,7 @@ func (logic Logic) ListLocations() ([]m.PicnicLocation, error) {
 
 func (logic Logic) FetchLocationByID(id int) (*m.PicnicLocation, error) {
 	var location m.PicnicLocation
-	if err := logic.Db.Where("Id = ?", id).First(&location).Error; err != nil {
+	if err := logic.DB.Where("Id = ?", id).First(&location).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -38,7 +38,7 @@ func (logic Logic) UpdateLocationByID(
 	id int,
 	loc m.PicnicLocationInput,
 ) (*m.PicnicLocation, error) {
-	err := logic.Db.Model(&m.PicnicLocation{}).
+	err := logic.DB.Model(&m.PicnicLocation{}).
 		Where("id = ?", id).
 		Updates(&loc).
 		Error
@@ -63,7 +63,7 @@ func (logic Logic) CreateLocation(location m.PicnicLocationInput) (int, error) {
 	convertedLoc := m.MapInputToPicnicLocation(location)
 
 	// add new row
-	if err := logic.Db.Create(&convertedLoc).Error; err != nil {
+	if err := logic.DB.Create(&convertedLoc).Error; err != nil {
 		return 0, fmt.Errorf("error creating picnic location: %s", err)
 	}
 
@@ -71,7 +71,7 @@ func (logic Logic) CreateLocation(location m.PicnicLocationInput) (int, error) {
 }
 
 func (logic Logic) DeleteLocationByID(id int) error {
-	if err := logic.Db.Where("id = ?", id).Delete(&m.PicnicLocation{}).Error; err != nil {
+	if err := logic.DB.Where("id = ?", id).Delete(&m.PicnicLocation{}).Error; err != nil {
 		return fmt.Errorf("error deleting picnic location: %s", err)
 	}
 

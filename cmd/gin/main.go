@@ -23,7 +23,10 @@ func Execute() {
 
 	config.LoggerInit()
 	config.DotEnvInit()
-	config := config.HydrateConfigFromEnv()
+	config, err := config.HydrateConfigFromEnv()
+	if err != nil {
+		panic(err)
+	}
 
 	SwaggerInit(config)
 

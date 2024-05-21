@@ -12,7 +12,7 @@ import (
 
 func (logic Logic) ListTeddyBears() ([]m.TeddyBearReturn, error) {
 	var bears []m.TeddyBear
-	err := logic.Db.
+	err := logic.DB.
 		Model(&m.TeddyBear{}).
 		Preload("Picnics").
 		Find(&bears).
@@ -35,7 +35,7 @@ func (logic Logic) ListPaginatedTeddyBears(
 ) ([]m.TeddyBearReturn, error) {
 	var bears []m.TeddyBear
 	offset := (page - 1) * limit
-	err := logic.Db.
+	err := logic.DB.
 		Model(&m.TeddyBear{}).
 		Preload("Picnics").
 		Offset(offset).
@@ -62,7 +62,7 @@ func (logic Logic) FetchTeddyBearByName(
 	name string,
 ) (*m.TeddyBearReturn, error) {
 	var bear m.TeddyBear
-	err := logic.Db.Model(&m.TeddyBear{}).
+	err := logic.DB.Model(&m.TeddyBear{}).
 		Where("name = ?", name).
 		Preload("Picnics").
 		First(&bear).
@@ -89,7 +89,7 @@ func (logic Logic) UpdateTeddyBearByName(
 ) (*m.TeddyBearReturn, error) {
 	bear := m.MapInputToTeddyBear(inputBear)
 
-	tx := logic.Db.Begin()
+	tx := logic.DB.Begin()
 
 	// update item
 	err := tx.
@@ -155,7 +155,7 @@ func (logic Logic) CreateTeddyBear(inputBear m.TeddyBearInput) (int, error) {
 	bear := m.MapInputToTeddyBear(inputBear)
 
 	// add new row
-	err := logic.Db.
+	err := logic.DB.
 		Create(&bear).
 		Save(&bear).
 		Error
@@ -169,7 +169,7 @@ func (logic Logic) CreateTeddyBear(inputBear m.TeddyBearInput) (int, error) {
 func (logic Logic) DeleteTeddyBearByName(name string) error {
 	// get record
 	var bear m.TeddyBear
-	err := logic.Db.Model(&m.TeddyBear{}).
+	err := logic.DB.Model(&m.TeddyBear{}).
 		Where("name = ?", name).
 		Omit("Picnics").
 		First(&bear).
@@ -186,7 +186,7 @@ func (logic Logic) DeleteTeddyBearByName(name string) error {
 	}
 
 	// delete record
-	err = logic.Db.
+	err = logic.DB.
 		Select(clause.Associations).
 		Delete(&bear).
 		Error
