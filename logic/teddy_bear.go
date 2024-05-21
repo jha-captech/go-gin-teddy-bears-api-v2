@@ -4,65 +4,62 @@ import (
 	"errors"
 	"fmt"
 
-	m "teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-func (logic Logic) ListTeddyBears() ([]m.TeddyBearReturn, error) {
-	var bears []m.TeddyBear
-	err := logic.DB.
-		Model(&m.TeddyBear{}).
+func (l Logic) ListTeddyBears() ([]models.TeddyBearReturn, error) {
+	var bears []models.TeddyBear
+	err := l.DB.
+		Model(&models.TeddyBear{}).
 		Preload("Picnics").
 		Find(&bears).
 		Error
 	if err != nil {
-		return nil, fmt.Errorf("error retrieving picnic locations: %s", err)
+		return nil, fmt.Errorf("ListTeddyBears: %w", err)
 	}
 
-	var bearsReturn []m.TeddyBearReturn
+	var bearsReturn []models.TeddyBearReturn
 	for _, bear := range bears {
-		bearReturn := m.MapTeddyBearToOutput(bear)
+		bearReturn := models.MapTeddyBearToOutput(bear)
 		bearsReturn = append(bearsReturn, bearReturn)
 	}
 
 	return bearsReturn, nil
 }
 
-func (logic Logic) ListPaginatedTeddyBears(
+func (l Logic) ListPaginatedTeddyBears(
 	page, limit int,
-) ([]m.TeddyBearReturn, error) {
-	var bears []m.TeddyBear
+) ([]models.TeddyBearReturn, error) {
+	var bears []models.TeddyBear
 	offset := (page - 1) * limit
-	err := logic.DB.
-		Model(&m.TeddyBear{}).
+	err := l.DB.
+		Model(&models.TeddyBear{}).
 		Preload("Picnics").
 		Offset(offset).
 		Limit(limit).
 		Find(&bears).
 		Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, fmt.Errorf(
-			"error retrieving paginated teddy bears: %s",
-			err,
-		)
+		return nil, fmt.Errorf("ListPaginatedTeddyBears: %w", err)
 	}
 
-	var bearsReturn []m.TeddyBearReturn
+	var bearsReturn []models.TeddyBearReturn
 	for _, bear := range bears {
-		bearReturn := m.MapTeddyBearToOutput(bear)
+		bearReturn := models.MapTeddyBearToOutput(bear)
 		bearsReturn = append(bearsReturn, bearReturn)
 	}
 
 	return bearsReturn, nil
 }
 
-func (logic Logic) FetchTeddyBearByName(
+func (l Logic) FetchTeddyBearByName(
 	name string,
-) (*m.TeddyBearReturn, error) {
-	var bear m.TeddyBear
-	err := logic.DB.Model(&m.TeddyBear{}).
+) (*models.TeddyBearReturn, error) {
+	var bear models.TeddyBear
+	err := l.DB.Model(&models.TeddyBear{}).
 		Where("name = ?", name).
 		Preload("Picnics").
 		First(&bear).
@@ -72,24 +69,21 @@ func (logic Logic) FetchTeddyBearByName(
 			return nil, nil
 		}
 
-		return nil, fmt.Errorf(
-			"error retrieving picnic locations: %s",
-			err,
-		)
+		return nil, fmt.Errorf("FetchTeddyBearByName: %w", err)
 	}
 
-	bearReturn := m.MapTeddyBearToOutput(bear)
+	bearReturn := models.MapTeddyBearToOutput(bear)
 
 	return &bearReturn, nil
 }
 
-func (logic Logic) UpdateTeddyBearByName(
+func (l Logic) UpdateTeddyBearByName(
 	name string,
-	inputBear m.TeddyBearInput,
-) (*m.TeddyBearReturn, error) {
-	bear := m.MapInputToTeddyBear(inputBear)
+	inputBear models.TeddyBearInput,
+) (*models.TeddyBearReturn, error) {
+	bear := models.MapInputToTeddyBear(inputBear)
 
-	tx := logic.DB.Begin()
+	tx := l.DB.Begin()
 
 	// update item
 	err := tx.
@@ -100,10 +94,7 @@ func (logic Logic) UpdateTeddyBearByName(
 		Error
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf(
-			"error retrieving picnic locations: %s",
-			err,
-		)
+		return nil, fmt.Errorf("UpdateTeddyBearByName: %w", err)
 	}
 
 	// get updated item
@@ -114,10 +105,7 @@ func (logic Logic) UpdateTeddyBearByName(
 		Error
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf(
-			"error retrieving updated teddy bear: %s",
-			err,
-		)
+		return nil, fmt.Errorf("UpdateTeddyBearByName: %w", err)
 	}
 
 	// updated associated tables
@@ -127,49 +115,43 @@ func (logic Logic) UpdateTeddyBearByName(
 		Replace(&bear.Picnics)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf(
-			"error retrieving picnic locations: %s",
-			err,
-		)
+		return nil, fmt.Errorf("UpdateTeddyBearByName: %w", err)
 	}
 
 	// commit changes
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf(
-			"error retrieving picnic locations: %s",
-			err,
-		)
+		return nil, fmt.Errorf("UpdateTeddyBearByName: %w", err)
 	}
 
-	bearReturn, err := logic.FetchTeddyBearByName(name)
+	bearReturn, err := l.FetchTeddyBearByName(name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("UpdateTeddyBearByName: %w", err)
 	}
 
 	return bearReturn, nil
 }
 
-func (logic Logic) CreateTeddyBear(inputBear m.TeddyBearInput) (int, error) {
+func (l Logic) CreateTeddyBear(inputBear models.TeddyBearInput) (int, error) {
 	// set new user
-	bear := m.MapInputToTeddyBear(inputBear)
+	bear := models.MapInputToTeddyBear(inputBear)
 
 	// add new row
-	err := logic.DB.
+	err := l.DB.
 		Create(&bear).
 		Save(&bear).
 		Error
 	if err != nil {
-		return 0, fmt.Errorf("error creating picnic location: %s", err)
+		return 0, fmt.Errorf("CreateTeddyBear: %w", err)
 	}
 
 	return int(bear.ID), nil
 }
 
-func (logic Logic) DeleteTeddyBearByName(name string) error {
+func (l Logic) DeleteTeddyBearByName(name string) error {
 	// get record
-	var bear m.TeddyBear
-	err := logic.DB.Model(&m.TeddyBear{}).
+	var bear models.TeddyBear
+	err := l.DB.Model(&models.TeddyBear{}).
 		Where("name = ?", name).
 		Omit("Picnics").
 		First(&bear).
@@ -179,19 +161,16 @@ func (logic Logic) DeleteTeddyBearByName(name string) error {
 			return nil
 		}
 
-		return fmt.Errorf(
-			"error retrieving picnic locations: %s",
-			err,
-		)
+		return fmt.Errorf("DeleteTeddyBearByName: %w", err)
 	}
 
 	// delete record
-	err = logic.DB.
+	err = l.DB.
 		Select(clause.Associations).
 		Delete(&bear).
 		Error
 	if err != nil {
-		return fmt.Errorf("error deleting picnic location: %s", err)
+		return fmt.Errorf("DeleteTeddyBearByName: %w", err)
 	}
 
 	return nil
