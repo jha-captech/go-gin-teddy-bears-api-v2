@@ -11,13 +11,13 @@ func (a *Actions) listAllTeddyBears(cCtx *cli.Context) error {
 	// get data from db
 	bears, err := a.Logic.ListTeddyBears()
 	if err != nil {
-		return err
+		return fmt.Errorf("listAllTeddyBears: %w", err)
 	}
 
 	// Marshal the struct to JSON with 4-space indentation
 	jsonData, err := json.MarshalIndent(bears, "", "    ")
 	if err != nil {
-		return err
+		return fmt.Errorf("listAllTeddyBears: %w", err)
 	}
 
 	// Print the JSON data
@@ -33,13 +33,13 @@ func (a *Actions) fetchTeddyBearByName(cCtx *cli.Context) error {
 	// get data from db
 	bear, err := a.Logic.FetchTeddyBearByName(name)
 	if err != nil {
-		return err
+		return fmt.Errorf("fetchTeddyBearByName: %w", err)
 	}
 
 	// Marshal the struct to JSON with 4-space indentation
 	jsonData, err := json.MarshalIndent(bear, "", "    ")
 	if err != nil {
-		return err
+		return fmt.Errorf("fetchTeddyBearByName: %w", err)
 	}
 
 	// Print the JSON data
