@@ -20,13 +20,13 @@ type responseAllTeddyBear struct {
 	TeddyBears []models.TeddyBearReturn `json:"locations"`
 }
 
-func (h Handler) teddyBear(r chi.Router) {
-	r.Get("/", h.listAllTeddyBears)
-	r.Get("/paginated", h.listPaginatedTeddyBears)
-	r.Get("/{name}", h.fetchTeddyBearByName)
-	r.Put("/{name}", h.updateTeddyBearByName)
-	r.Post("/", h.createTeddyBear)
-	r.Delete("/{name}", h.deleteTeddyBearByName)
+func (h Handler) teddyBear(r Router) {
+	r.get("/", h.listAllTeddyBears)
+	r.get("/paginated", h.listPaginatedTeddyBears)
+	r.get("/:name", h.fetchTeddyBearByName)
+	r.put("/:name", h.updateTeddyBearByName)
+	r.post("/", h.createTeddyBear)
+	r.delete("/:name", h.deleteTeddyBearByName)
 }
 
 // @Summary		List all teddy bears

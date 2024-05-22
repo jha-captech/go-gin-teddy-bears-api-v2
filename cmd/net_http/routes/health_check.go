@@ -2,12 +2,10 @@ package routes
 
 import (
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 )
 
-func (h *Handler) healthCheck(r chi.Router) {
-	r.Get("/", h.runHealthCheck)
+func (h *Handler) healthCheck(r Router) {
+	r.get("/", h.runHealthCheck)
 }
 
 // @Summary		Health check response

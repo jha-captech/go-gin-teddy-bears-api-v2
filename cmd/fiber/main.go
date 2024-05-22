@@ -24,7 +24,7 @@ func Execute() {
 
 	config.LoggerInit()
 	config.DotEnvInit()
-	config, err := config.HydrateConfigFromEnv()
+	config, err := config.NewConfig()
 	if err != nil {
 		panic(err)
 	}

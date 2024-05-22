@@ -27,7 +27,7 @@ func Execute() {
 	slog.Info("running http.main()")
 
 	config.DotEnvInit()
-	config, err := config.HydrateConfigFromEnv()
+	config, err := config.NewConfig()
 	if err != nil {
 		panic(err)
 	}
