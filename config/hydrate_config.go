@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func HydrateConfigFromEnv() (Configuration, error) {
+func NewConfig() (Configuration, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
@@ -21,7 +21,10 @@ func HydrateConfigFromEnv() (Configuration, error) {
 
 	config := Configuration{}
 	if err := viper.Unmarshal(&config); err != nil {
-		return Configuration{}, fmt.Errorf("unable to decode config file into configuration, %v", err)
+		return Configuration{}, fmt.Errorf(
+			"unable to decode config file into configuration, %v",
+			err,
+		)
 	}
 
 	return config, nil
