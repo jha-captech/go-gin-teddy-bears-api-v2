@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,20 +12,20 @@ import (
 const MaxLimit = 15
 
 type responseOneTeddyBear struct {
-	TeddyBear *models.TeddyBearReturn `json:"location"`
+	TeddyBear logic.TeddyBearReturn `json:"location"`
 }
 
 type responseAllTeddyBear struct {
-	TeddyBears []models.TeddyBearReturn `json:"locations"`
+	TeddyBears []logic.TeddyBearReturn `json:"locations"`
 }
 
-func (r Router) teddyBear(fr fiber.Router) {
-	fr.Get("/", r.listAllTeddyBears)
-	fr.Get("/paginated", r.listPaginatedTeddyBears)
-	fr.Get("/:name", r.fetchTeddyBearByName)
-	fr.Put("/:name", r.updateTeddyBearByName)
-	fr.Post("/", r.createTeddyBear)
-	fr.Delete("/:name", r.deleteTeddyBearByName)
+func (h Handler) teddyBear(r fiber.Router) {
+	r.Get("/", h.listAllTeddyBears)
+	r.Get("/paginated", h.listPaginatedTeddyBears)
+	r.Get("/:name", h.fetchTeddyBearByName)
+	r.Put("/:name", h.updateTeddyBearByName)
+	r.Post("/", h.createTeddyBear)
+	r.Delete("/:name", h.deleteTeddyBearByName)
 }
 
 // @Summary		List all teddy bears
@@ -36,9 +36,9 @@ func (r Router) teddyBear(fr fiber.Router) {
 // @Success		200			{object}	routes.responseAllTeddyBear
 // @Failure		500			{object}	routes.responseError
 // @Router		/teddy-bear [GET]
-func (router Router) listAllTeddyBears(c *fiber.Ctx) error {
+func (h Handler) listAllTeddyBears(c *fiber.Ctx) error {
 	// get values from db
-	bears, err := router.Logic.ListTeddyBears()
+	bears, err := h.Logic.ListTeddyBears()
 	if err != nil {
 		slog.Error("error getting a object from db", "error", err)
 		return c.
@@ -62,7 +62,7 @@ func (router Router) listAllTeddyBears(c *fiber.Ctx) error {
 // @Success		200			{object}	routes.responseAllTeddyBear
 // @Failure		500			{object}	routes.responseError
 // @Router		/teddy-bear/paginated 	[GET]
-func (router Router) listPaginatedTeddyBears(c *fiber.Ctx) error {
+func (h Handler) listPaginatedTeddyBears(c *fiber.Ctx) error {
 	// Parse query parameters
 	page, _ := c.ParamsInt("page")
 	limit, _ := c.ParamsInt("limit")
@@ -81,7 +81,7 @@ func (router Router) listPaginatedTeddyBears(c *fiber.Ctx) error {
 	offset := (page - 1) * limit
 
 	// Get paginated teddy bears from the database
-	bears, err := router.Logic.ListPaginatedTeddyBears(offset, limit)
+	bears, err := h.Logic.ListPaginatedTeddyBears(offset, limit)
 	if err != nil {
 		slog.Error("error getting all objects from db", "error", err)
 		return c.
@@ -105,7 +105,7 @@ func (router Router) listPaginatedTeddyBears(c *fiber.Ctx) error {
 // @Failure		400					{object}	routes.responseError
 // @Failure		500					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[GET]
-func (router Router) fetchTeddyBearByName(c *fiber.Ctx) error {
+func (h Handler) fetchTeddyBearByName(c *fiber.Ctx) error {
 	// get and validate name
 	name := c.Params("name")
 	if name == "" {
@@ -116,7 +116,7 @@ func (router Router) fetchTeddyBearByName(c *fiber.Ctx) error {
 	}
 
 	// get value from db
-	bear, err := router.Logic.FetchTeddyBearByName(name)
+	bear, err := h.Logic.FetchTeddyBearByName(name)
 	if err != nil {
 		slog.Error("error getting a objects from db", "error", err)
 		return c.
@@ -136,12 +136,12 @@ func (router Router) fetchTeddyBearByName(c *fiber.Ctx) error {
 // @Accept		json
 // @Produce		json
 // @Param		name				path		string	true	"Teddy Bear Name"
-// @Param		teddyBear			body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear			body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		200					{object}	routes.responseOneTeddyBear
 // @Failure		500					{object}	routes.responseError
 // @Failure		422					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[PUT]
-func (router Router) updateTeddyBearByName(c *fiber.Ctx) error {
+func (h Handler) updateTeddyBearByName(c *fiber.Ctx) error {
 	// get and validate name
 	name := c.Params("name")
 	if name == "" {
@@ -152,7 +152,7 @@ func (router Router) updateTeddyBearByName(c *fiber.Ctx) error {
 	}
 
 	// get and validate body as object
-	var inputBear models.TeddyBearInput
+	var inputBear logic.TeddyBearInput
 	if err := c.BodyParser(&inputBear); err != nil {
 		slog.Error("BodyParser error", "error", err)
 		return c.
@@ -161,7 +161,7 @@ func (router Router) updateTeddyBearByName(c *fiber.Ctx) error {
 	}
 
 	// get value from db
-	bear, err := router.Logic.UpdateTeddyBearByName(name, inputBear)
+	bear, err := h.Logic.UpdateTeddyBearByName(name, inputBear)
 	if err != nil {
 		slog.Error("error updating object in db", "error", err)
 		return c.
@@ -180,15 +180,15 @@ func (router Router) updateTeddyBearByName(c *fiber.Ctx) error {
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json
-// @Param		teddyBear	body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear	body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		422			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
 // @Failure		409			{object}	routes.responseError
 // @Router		/teddy-bear	[POST]
-func (router Router) createTeddyBear(c *fiber.Ctx) error {
+func (h Handler) createTeddyBear(c *fiber.Ctx) error {
 	// get and validate body as object
-	var inputBear models.TeddyBearInput
+	var inputBear logic.TeddyBearInput
 	if err := c.BodyParser(&inputBear); err != nil {
 		slog.Error("BodyParser error", "error", err)
 		return c.
@@ -197,7 +197,7 @@ func (router Router) createTeddyBear(c *fiber.Ctx) error {
 	}
 
 	// add to db
-	id, err := router.Logic.CreateTeddyBear(inputBear)
+	id, err := h.Logic.CreateTeddyBear(inputBear)
 	if err != nil {
 		slog.Error("error adding object to db", "error", err)
 		return c.
@@ -221,7 +221,7 @@ func (router Router) createTeddyBear(c *fiber.Ctx) error {
 // @Failure		500					{object}	routes.responseError
 // @Failure		404					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[DELETE]
-func (router Router) deleteTeddyBearByName(c *fiber.Ctx) error {
+func (h Handler) deleteTeddyBearByName(c *fiber.Ctx) error {
 	// get and validate name
 	name := c.Params("name")
 	if name == "" {
@@ -232,7 +232,7 @@ func (router Router) deleteTeddyBearByName(c *fiber.Ctx) error {
 	}
 
 	// remove from db
-	if err := router.Logic.DeleteTeddyBearByName(name); err != nil {
+	if err := h.Logic.DeleteTeddyBearByName(name); err != nil {
 		slog.Error("error deleting object from db", "error", err)
 		return c.
 			Status(http.StatusInternalServerError).

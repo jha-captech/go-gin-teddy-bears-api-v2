@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -13,11 +13,11 @@ import (
 const MaxLimit = 15
 
 type responseOneTeddyBear struct {
-	TeddyBear *models.TeddyBearReturn `json:"location"`
+	TeddyBear logic.TeddyBearReturn `json:"location"`
 }
 
 type responseAllTeddyBear struct {
-	TeddyBears []models.TeddyBearReturn `json:"locations"`
+	TeddyBears []logic.TeddyBearReturn `json:"locations"`
 }
 
 func (h Handler) teddyBear(r chi.Router) {
@@ -143,7 +143,7 @@ func (h Handler) fetchTeddyBearByName(w http.ResponseWriter, r *http.Request) {
 // @Accept		json
 // @Produce		json
 // @Param		name				path		string	true	"Teddy Bear Name"
-// @Param		teddyBear			body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear			body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		200					{object}	routes.responseOneTeddyBear
 // @Failure		500					{object}	routes.responseError
 // @Failure		422					{object}	routes.responseError
@@ -162,7 +162,7 @@ func (h Handler) updateTeddyBearByName(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get and validate body as object
-	inputBear, err := decode[models.TeddyBearInput](r)
+	inputBear, err := decode[logic.TeddyBearInput](r)
 	if err != nil {
 		slog.Error("BodyParser error", "error", err)
 		encode(
@@ -194,7 +194,7 @@ func (h Handler) updateTeddyBearByName(w http.ResponseWriter, r *http.Request) {
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json
-// @Param		teddyBear	body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear	body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		422			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
@@ -202,7 +202,7 @@ func (h Handler) updateTeddyBearByName(w http.ResponseWriter, r *http.Request) {
 // @Router		/teddy-bear	[POST]
 func (h Handler) createTeddyBear(w http.ResponseWriter, r *http.Request) {
 	// get and validate body as object
-	inputBear, err := decode[models.TeddyBearInput](r)
+	inputBear, err := decode[logic.TeddyBearInput](r)
 	if err != nil {
 		slog.Error("BodyParser error", "error", err)
 		encode(

@@ -5,12 +5,10 @@ import (
 
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/logic"
-
-	_ "teddy_bears_api_v2/models" // needed for swaggo to identify model types
 )
 
 type Handler struct {
-	Logic  *logic.Logic
+	Logic  logic.Logic
 	Config config.Configuration
 }
 
@@ -34,20 +32,20 @@ func NewRouter() Router {
 	return Router{Mux: http.NewServeMux()}
 }
 
-func NewHandler(logic *logic.Logic, config config.Configuration) Handler {
+func NewHandler(logic logic.Logic, config config.Configuration) Handler {
 	return Handler{
 		Logic:  logic,
 		Config: config,
 	}
 }
 
-func (h *Handler) InitRouter(r Router) {
-	r.group("/api", func(r Router) {
-		r.group("/health-check", h.healthCheck)
+func RoutesInit(app Router, handler Handler) {
+	app.group("/api", func(r Router) {
+		r.group("/health-check", handler.healthCheck)
 
-		r.group("/location", h.location)
-		r.group("/teddy-bear", h.teddyBear)
+		r.group("/location", handler.location)
+		r.group("/teddy-bear", handler.teddyBear)
 	})
 
-	r.group("/swagger", h.swagger)
+	app.group("/swagger", handler.swagger)
 }

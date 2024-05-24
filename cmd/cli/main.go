@@ -21,32 +21,23 @@ func main() {
 func Execute() {
 	config.LoggerInit()
 	config.DotEnvInit()
-	config, err := config.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := config.MustNewConfig()
 
 	// database connect
-	db, err := database.Connect(
+	db := database.MustNewDatabase(
 		config,
 		sqlite.Open(config.Database.Name),
 		gorm.Config{},
 		config.Database.ConnectionRetry,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	// logic setup
-	logic, err := logic.InitLogic(db)
-	if err != nil {
-		panic(err)
-	}
+	logicSession := logic.NewLogic(db)
 
-	// a struct setup
-	a := &actions.Actions{Logic: logic, Config: config}
+	// router struct setup
+	actionsSession := actions.NewActions(logicSession, config)
 
-	app := actions.InitActions(a)
+	app := actions.InitActions(actionsSession)
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

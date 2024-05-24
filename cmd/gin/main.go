@@ -24,32 +24,23 @@ func Execute() {
 
 	config.LoggerInit()
 	config.DotEnvInit()
-	config, err := config.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := config.MustNewConfig()
 
 	SwaggerInit(config)
 
 	// database connect
-	db, err := database.Connect(
+	db := database.MustNewDatabase(
 		config,
 		sqlite.Open(config.Database.Name),
 		gorm.Config{},
 		config.Database.ConnectionRetry,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	// logic setup
-	logic, err := logic.InitLogic(db)
-	if err != nil {
-		panic(err)
-	}
+	logic := logic.NewLogic(db)
 
 	// router struct setup
-	router := &routes.Router{Logic: logic, Config: config}
+	router := routes.NewHandler(logic, config)
 
 	// setup app
 	app := gin.Default()
@@ -68,8 +59,8 @@ func Execute() {
 	}
 
 	// setup routes
-	routes.InitRouter(app, router)
+	routes.RoutesInit(app, router)
 
-	err = app.Run(config.HTTP.Port)
+	err := app.Run(config.HTTP.Port)
 	slog.Error("app encountered an error", "err", err)
 }

@@ -5,7 +5,7 @@ GET http://localhost:9888/api/health-check
 
 ### api/location
 ###
-GET http://localhost:9888/api/location/
+GET http://localhost:9888/api/location
 ###
 GET http://localhost:9888/api/location/1
 ###

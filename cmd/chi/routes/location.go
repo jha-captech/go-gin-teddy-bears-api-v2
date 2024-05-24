@@ -5,17 +5,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type responseOneLocation struct {
-	Location *models.PicnicLocation `json:"location"`
+	Location logic.PicnicLocationReturn `json:"location"`
 }
 
 type responseAllLocation struct {
-	Locations []models.PicnicLocation `json:"locations"`
+	Locations []logic.PicnicLocationReturn `json:"locations"`
 }
 
 func (h Handler) location(r chi.Router) {
@@ -92,7 +92,7 @@ func (h Handler) fetchLocationById(w http.ResponseWriter, r *http.Request) {
 // @Accept		json
 // @Produce		json
 // @Param		id				path		int							true	"Location ID"
-// @Param		location		body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location		body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		200				{object}	routes.responseOneLocation
 // @Failure		400				{object}	routes.responseError
 // @Failure		500				{object}	routes.responseError
@@ -107,7 +107,7 @@ func (h Handler) updateLocationById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get and validate body as object
-	inputLocation, err := decode[models.PicnicLocationInput](r)
+	inputLocation, err := decode[logic.PicnicLocationInput](r)
 	if err != nil {
 		slog.Error("BodyParser error", "error", err)
 		encode(
@@ -139,14 +139,14 @@ func (h Handler) updateLocationById(w http.ResponseWriter, r *http.Request) {
 // @Tags		location
 // @Accept		json
 // @Produce		json
-// @Param		location	body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location	body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		400			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
 // @Router		/location	[POST]
 func (h Handler) createLocation(w http.ResponseWriter, r *http.Request) {
 	// get and validate body as object
-	inputLocation, err := decode[models.PicnicLocationInput](r)
+	inputLocation, err := decode[logic.PicnicLocationInput](r)
 	if err != nil {
 		slog.Error("BodyParser error", "error", err)
 		encode(

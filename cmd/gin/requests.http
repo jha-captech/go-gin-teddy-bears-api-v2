@@ -1,11 +1,9 @@
 ### teddy-bear
 ###
-GET http://localhost:9888/api/health-check
+GET http://localhost:9888/api/health-check/
 ###
 
 ### teddy-bear
-###
-GET http://localhost:9888/api/teddy-bear/test
 ###
 GET http://localhost:9888/api/teddy-bear
 ###

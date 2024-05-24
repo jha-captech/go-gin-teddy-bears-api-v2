@@ -85,7 +85,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PicnicLocationInput"
+                            "$ref": "#/definitions/logic.PicnicLocationInput"
                         }
                     }
                 ],
@@ -180,7 +180,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PicnicLocationInput"
+                            "$ref": "#/definitions/logic.PicnicLocationInput"
                         }
                     }
                 ],
@@ -295,7 +295,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.TeddyBearInput"
+                            "$ref": "#/definitions/logic.TeddyBearInput"
                         }
                     }
                 ],
@@ -439,7 +439,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.TeddyBearInput"
+                            "$ref": "#/definitions/logic.TeddyBearInput"
                         }
                     }
                 ],
@@ -509,7 +509,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.PicnicLocation": {
+        "logic.PicnicLocationInput": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "location_name": {
+                    "type": "string"
+                },
+                "municipality": {
+                    "type": "string"
+                }
+            }
+        },
+        "logic.PicnicLocationReturn": {
             "type": "object",
             "properties": {
                 "capacity": {
@@ -526,21 +540,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.PicnicLocationInput": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer"
-                },
-                "location_name": {
-                    "type": "string"
-                },
-                "municipality": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.TeddyBearInput": {
+        "logic.TeddyBearInput": {
             "type": "object",
             "properties": {
                 "accent_color": {
@@ -569,7 +569,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TeddyBearReturn": {
+        "logic.TeddyBearReturn": {
             "type": "object",
             "properties": {
                 "accent_color": {
@@ -607,7 +607,7 @@ const docTemplate = `{
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.PicnicLocation"
+                        "$ref": "#/definitions/logic.PicnicLocationReturn"
                     }
                 }
             }
@@ -618,7 +618,7 @@ const docTemplate = `{
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.TeddyBearReturn"
+                        "$ref": "#/definitions/logic.TeddyBearReturn"
                     }
                 }
             }
@@ -651,7 +651,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "location": {
-                    "$ref": "#/definitions/models.PicnicLocation"
+                    "$ref": "#/definitions/logic.PicnicLocationReturn"
                 }
             }
         },
@@ -659,7 +659,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "location": {
-                    "$ref": "#/definitions/models.TeddyBearReturn"
+                    "$ref": "#/definitions/logic.TeddyBearReturn"
                 }
             }
         }

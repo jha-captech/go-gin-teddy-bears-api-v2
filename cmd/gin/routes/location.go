@@ -5,20 +5,20 @@ import (
 	"net/http"
 	"strconv"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/gin-gonic/gin"
 )
 
 type responseOneLocation struct {
-	Location *models.PicnicLocation `json:"location"`
+	Location logic.PicnicLocationReturn `json:"location"`
 }
 
 type responseAllLocation struct {
-	Locations []models.PicnicLocation `json:"locations"`
+	Locations []logic.PicnicLocationReturn `json:"locations"`
 }
 
-func (router Router) location(r *gin.RouterGroup) {
+func (router Handler) location(r *gin.RouterGroup) {
 	r.GET("/", router.listAllLocations)
 	r.GET("/:id", router.fetchLocationById)
 	r.PUT("/:id", router.updateLocationById)
@@ -34,7 +34,7 @@ func (router Router) location(r *gin.RouterGroup) {
 // @Success		200			{object}	routes.responseAllLocation
 // @Failure		500			{object}	routes.responseError
 // @Router		/location 	[GET]
-func (router Router) listAllLocations(c *gin.Context) {
+func (router Handler) listAllLocations(c *gin.Context) {
 	// get values from db
 	locations, err := router.Logic.ListLocations()
 	if err != nil {
@@ -63,7 +63,7 @@ func (router Router) listAllLocations(c *gin.Context) {
 // @Failure		400				{object}	routes.responseError
 // @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[GET]
-func (router Router) fetchLocationById(c *gin.Context) {
+func (router Handler) fetchLocationById(c *gin.Context) {
 	// get and validate id
 	idString := c.Param("id")
 	id, err := strconv.Atoi(idString)
@@ -100,12 +100,12 @@ func (router Router) fetchLocationById(c *gin.Context) {
 // @Accept		json
 // @Produce		json
 // @Param		id				path		int							true	"Location ID"
-// @Param		location		body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location		body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		200				{object}	routes.responseOneLocation
 // @Failure		400				{object}	routes.responseError
 // @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[PUT]
-func (router Router) updateLocationById(c *gin.Context) {
+func (router Handler) updateLocationById(c *gin.Context) {
 	// get and validate id
 	idString := c.Param("id")
 	id, err := strconv.Atoi(idString)
@@ -119,7 +119,7 @@ func (router Router) updateLocationById(c *gin.Context) {
 	}
 
 	// get and validate body as object
-	var inputLocation models.PicnicLocationInput
+	var inputLocation logic.PicnicLocationInput
 	if err := c.ShouldBindJSON(&inputLocation); err != nil {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
@@ -152,14 +152,14 @@ func (router Router) updateLocationById(c *gin.Context) {
 // @Tags		location
 // @Accept		json
 // @Produce		json
-// @Param		location	body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location	body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		400			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
 // @Router		/location	[POST]
-func (router Router) createLocation(c *gin.Context) {
+func (router Handler) createLocation(c *gin.Context) {
 	// get and validate body as object
-	var inputLocation models.PicnicLocationInput
+	var inputLocation logic.PicnicLocationInput
 	if err := c.ShouldBindJSON(&inputLocation); err != nil {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
@@ -197,7 +197,7 @@ func (router Router) createLocation(c *gin.Context) {
 // @Failure		500				{object}	routes.responseError
 // @Failure		400				{object}	routes.responseError
 // @Router		/location/{id} 	[DELETE]
-func (router Router) deleteLocationById(c *gin.Context) {
+func (router Handler) deleteLocationById(c *gin.Context) {
 	// get and validate id
 	idString := c.Param("id")
 	id, err := strconv.Atoi(idString)
