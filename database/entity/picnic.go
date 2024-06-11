@@ -1,4 +1,4 @@
-package models
+package entity
 
 import (
 	"time"
@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Picnic model
 type Picnic struct {
 	gorm.Model
 	PicnicName   string       `gorm:"unique;not null"                json:"picnic_name"`

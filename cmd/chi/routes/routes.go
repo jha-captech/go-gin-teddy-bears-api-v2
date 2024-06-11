@@ -5,12 +5,10 @@ import (
 	"teddy_bears_api_v2/logic"
 
 	"github.com/go-chi/chi/v5"
-
-	_ "teddy_bears_api_v2/models" // needed for swaggo to identify model types
 )
 
 type Handler struct {
-	Logic  *logic.Logic
+	Logic  logic.Logic
 	Config config.Configuration
 }
 
@@ -26,7 +24,15 @@ type responseError struct {
 	Error string `json:"error"`
 }
 
-func (h *Handler) InitRouter(app *chi.Mux) {
+// Setup and return new routes.Router struct.
+func NewHandler(logic logic.Logic, config config.Configuration) Handler {
+	return Handler{
+		Logic:  logic,
+		Config: config,
+	}
+}
+
+func RoutesInit(app *chi.Mux, h Handler) {
 	app.Route("/api", func(r chi.Router) {
 		r.Route("/health-check", h.healthCheck)
 

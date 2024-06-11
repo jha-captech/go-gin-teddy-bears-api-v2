@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,14 +13,14 @@ import (
 const MaxLimit = 15
 
 type responseOneTeddyBear struct {
-	TeddyBear *models.TeddyBearReturn `json:"location"`
+	TeddyBear logic.TeddyBearReturn `json:"location"`
 }
 
 type responseAllTeddyBear struct {
-	TeddyBears []models.TeddyBearReturn `json:"locations"`
+	TeddyBears []logic.TeddyBearReturn `json:"locations"`
 }
 
-func (router Router) teddyBear(r *gin.RouterGroup) {
+func (router Handler) teddyBear(r *gin.RouterGroup) {
 	r.GET("/", router.listAllTeddyBears)
 	r.GET("/paginated", router.listPaginatedTeddyBears)
 	r.GET("/:name", router.fetchTeddyBearByName)
@@ -37,7 +37,7 @@ func (router Router) teddyBear(r *gin.RouterGroup) {
 // @Success		200			{object}	routes.responseAllTeddyBear
 // @Failure		500			{object}	routes.responseError
 // @Router		/teddy-bear [GET]
-func (router Router) listAllTeddyBears(c *gin.Context) {
+func (router Handler) listAllTeddyBears(c *gin.Context) {
 	// get values from db
 	bears, err := router.Logic.ListTeddyBears()
 	if err != nil {
@@ -66,7 +66,7 @@ func (router Router) listAllTeddyBears(c *gin.Context) {
 // @Success		200			{object}	routes.responseAllTeddyBear
 // @Failure		500			{object}	routes.responseError
 // @Router		/teddy-bear/paginated 	[GET]
-func (router Router) listPaginatedTeddyBears(c *gin.Context) {
+func (router Handler) listPaginatedTeddyBears(c *gin.Context) {
 	// Parse query parameters
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
@@ -112,7 +112,7 @@ func (router Router) listPaginatedTeddyBears(c *gin.Context) {
 // @Failure		400					{object}	routes.responseError
 // @Failure		500					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[GET]
-func (router Router) fetchTeddyBearByName(c *gin.Context) {
+func (router Handler) fetchTeddyBearByName(c *gin.Context) {
 	// get and validate name
 	name := c.Param("name")
 	if name == "" {
@@ -148,12 +148,12 @@ func (router Router) fetchTeddyBearByName(c *gin.Context) {
 // @Accept		json
 // @Produce		json
 // @Param		name				path		string	true	"Teddy Bear Name"
-// @Param		teddyBear			body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear			body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		200					{object}	routes.responseOneTeddyBear
 // @Failure		500					{object}	routes.responseError
 // @Failure		422					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[PUT]
-func (router Router) updateTeddyBearByName(c *gin.Context) {
+func (router Handler) updateTeddyBearByName(c *gin.Context) {
 	// get and validate name
 	name := c.Param("name")
 	if name == "" {
@@ -166,7 +166,7 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 	}
 
 	// get and validate body as object
-	var inputBear models.TeddyBearInput
+	var inputBear logic.TeddyBearInput
 	if err := c.ShouldBindJSON(&inputBear); err != nil {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
@@ -199,15 +199,15 @@ func (router Router) updateTeddyBearByName(c *gin.Context) {
 // @Tags		teddy-bear
 // @Accept		json
 // @Produce		json
-// @Param		teddyBear	body		models.TeddyBearInput	true	"Teddy Bear Object"
+// @Param		teddyBear	body		logic.TeddyBearInput	true	"Teddy Bear Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		422			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
 // @Failure		409			{object}	routes.responseError
 // @Router		/teddy-bear	[POST]
-func (router Router) createTeddyBear(c *gin.Context) {
+func (router Handler) createTeddyBear(c *gin.Context) {
 	// get and validate body as object
-	var inputBear models.TeddyBearInput
+	var inputBear logic.TeddyBearInput
 	if err := c.ShouldBindJSON(&inputBear); err != nil {
 		slog.Error("ShouldBindJSON error", "error", err)
 		c.JSON(
@@ -245,7 +245,7 @@ func (router Router) createTeddyBear(c *gin.Context) {
 // @Failure		500					{object}	routes.responseError
 // @Failure		404					{object}	routes.responseError
 // @Router		/teddy-bear/{name}	[DELETE]
-func (router Router) deleteTeddyBearByName(c *gin.Context) {
+func (router Handler) deleteTeddyBearByName(c *gin.Context) {
 	// get and validate name
 	name := c.Param("name")
 	if name == "" {

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (router Router) healthCheck(r *gin.RouterGroup) {
+func (router Handler) healthCheck(r *gin.RouterGroup) {
 	r.GET("/", router.runHealthCheck)
 }
 
@@ -17,7 +17,7 @@ func (router Router) healthCheck(r *gin.RouterGroup) {
 // @Produce		json
 // @Success		200				{object}	routes.responseMessage
 // @Router		/health-check 	[GET]
-func (router Router) runHealthCheck(c *gin.Context) {
+func (router Handler) runHealthCheck(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		responseMessage{Message: "Health check response."},

@@ -1,5 +1,14 @@
 definitions:
-  models.PicnicLocation:
+  logic.PicnicLocationInput:
+    properties:
+      capacity:
+        type: integer
+      location_name:
+        type: string
+      municipality:
+        type: string
+    type: object
+  logic.PicnicLocationReturn:
     properties:
       capacity:
         type: integer
@@ -10,16 +19,7 @@ definitions:
       municipality:
         type: string
     type: object
-  models.PicnicLocationInput:
-    properties:
-      capacity:
-        type: integer
-      location_name:
-        type: string
-      municipality:
-        type: string
-    type: object
-  models.TeddyBearInput:
+  logic.TeddyBearInput:
     properties:
       accent_color:
         type: string
@@ -38,7 +38,7 @@ definitions:
       primary_color:
         type: string
     type: object
-  models.TeddyBearReturn:
+  logic.TeddyBearReturn:
     properties:
       accent_color:
         type: string
@@ -63,14 +63,14 @@ definitions:
     properties:
       locations:
         items:
-          $ref: '#/definitions/models.PicnicLocation'
+          $ref: '#/definitions/logic.PicnicLocationReturn'
         type: array
     type: object
   routes.responseAllTeddyBear:
     properties:
       locations:
         items:
-          $ref: '#/definitions/models.TeddyBearReturn'
+          $ref: '#/definitions/logic.TeddyBearReturn'
         type: array
     type: object
   routes.responseError:
@@ -91,12 +91,12 @@ definitions:
   routes.responseOneLocation:
     properties:
       location:
-        $ref: '#/definitions/models.PicnicLocation'
+        $ref: '#/definitions/logic.PicnicLocationReturn'
     type: object
   routes.responseOneTeddyBear:
     properties:
       location:
-        $ref: '#/definitions/models.TeddyBearReturn'
+        $ref: '#/definitions/logic.TeddyBearReturn'
     type: object
 info:
   contact: {}
@@ -145,7 +145,7 @@ paths:
         name: location
         required: true
         schema:
-          $ref: '#/definitions/models.PicnicLocationInput'
+          $ref: '#/definitions/logic.PicnicLocationInput'
       produces:
       - application/json
       responses:
@@ -236,7 +236,7 @@ paths:
         name: location
         required: true
         schema:
-          $ref: '#/definitions/models.PicnicLocationInput'
+          $ref: '#/definitions/logic.PicnicLocationInput'
       produces:
       - application/json
       responses:
@@ -284,7 +284,7 @@ paths:
         name: teddyBear
         required: true
         schema:
-          $ref: '#/definitions/models.TeddyBearInput'
+          $ref: '#/definitions/logic.TeddyBearInput'
       produces:
       - application/json
       responses:
@@ -379,7 +379,7 @@ paths:
         name: teddyBear
         required: true
         schema:
-          $ref: '#/definitions/models.TeddyBearInput'
+          $ref: '#/definitions/logic.TeddyBearInput'
       produces:
       - application/json
       responses:

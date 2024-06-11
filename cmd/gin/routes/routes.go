@@ -5,12 +5,10 @@ import (
 	"teddy_bears_api_v2/logic"
 
 	"github.com/gin-gonic/gin"
-
-	_ "teddy_bears_api_v2/models" // needed for swaggo to identify model types
 )
 
-type Router struct {
-	Logic  *logic.Logic
+type Handler struct {
+	Logic  logic.Logic
 	Config config.Configuration
 }
 
@@ -26,13 +24,21 @@ type responseError struct {
 	Error string `json:"error"`
 }
 
-func InitRouter(app *gin.Engine, router *Router) {
+// Setup and return new routes.Router struct.
+func NewHandler(logic logic.Logic, config config.Configuration) Handler {
+	return Handler{
+		Logic:  logic,
+		Config: config,
+	}
+}
+
+func RoutesInit(app *gin.Engine, handler Handler) {
 	r := app.Group("api")
 
-	router.healthCheck(r.Group("health-check"))
+	handler.healthCheck(r.Group("health-check"))
 
-	router.location(r.Group("location"))
-	router.teddyBear(r.Group("teddy-bear"))
+	handler.location(r.Group("location"))
+	handler.teddyBear(r.Group("teddy-bear"))
 
-	router.swagger(app)
+	handler.swagger(app)
 }

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"teddy_bears_api_v2/cmd/net_http/middleware"
 	"teddy_bears_api_v2/cmd/net_http/routes"
 	"teddy_bears_api_v2/config"
 	"teddy_bears_api_v2/database"
@@ -25,45 +26,39 @@ func Execute() {
 	slog.Info("running net_http.main()")
 
 	config.DotEnvInit()
-	config, err := config.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := config.MustNewConfig()
 
 	SwaggerInit(config)
 
 	// database connect
-	db, err := database.Connect(
+	db := database.MustNewDatabase(
 		config,
 		sqlite.Open(config.Database.Name),
 		gorm.Config{},
 		config.Database.ConnectionRetry,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	// logic setup
-	logic, err := logic.InitLogic(db)
-	if err != nil {
-		panic(err)
-	}
+	logicSession := logic.NewLogic(db)
 
 	// router struct setup
-	handler := routes.NewHandler(logic, config)
+	handler := routes.NewHandler(logicSession, config)
 
 	// setup app
 	app := routes.NewRouter()
 
-	// set middleware
-	// app.Use(middleware.Logger)
-
 	// setup routes
-	handler.InitRouter(app)
+	routes.RoutesInit(app, handler)
+
+	// middleware
+	stack := middleware.CreateStack(
+		middleware.Logging,
+		middleware.AddTrailingBackSlash,
+	)
 
 	server := http.Server{
 		Addr:    config.HTTP.Port,
-		Handler: app.Mux,
+		Handler: stack(app.Mux),
 	}
 	log.Fatal(server.ListenAndServe())
 }

@@ -26,7 +26,9 @@ func decode[T any](r *http.Request) (T, error) {
 func (r Router) group(patter string, fn func(Router)) {
 	internalRouter := NewRouter()
 	fn(internalRouter)
+	// fmt.Printf("pattern: '%s'\n", patter)
 	r.Mux.Handle(patter+"/", http.StripPrefix(patter, internalRouter.Mux))
+	// http.StripPrefix("/", internalRouter.Mux)
 }
 
 func (r Router) get(patter string, handler func(http.ResponseWriter, *http.Request)) {

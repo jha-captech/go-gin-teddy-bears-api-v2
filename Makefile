@@ -46,6 +46,15 @@ chi_dev:
 	${GO} run ./cmd/chi
 
 
+# NET/HTTP
+
+
+.PHONY: net_http_dev
+net_http_dev:
+	swag init --parseDependency --generalInfo ".\..\main.go" --dir "cmd\net_http\routes" --output "cmd\net_http\docs" 
+	${GO} run ./cmd/net_http
+
+
 # CLI
 
 

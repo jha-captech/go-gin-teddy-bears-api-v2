@@ -6,22 +6,31 @@ import (
 	"time"
 
 	"teddy_bears_api_v2/config"
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/database/entity"
 
 	"gorm.io/gorm"
 )
 
-func Connect(
-	config config.Configuration,
-	dialector gorm.Dialector,
-	formConfig gorm.Config,
-	retryTimes int,
-) (db *gorm.DB, err error) {
+type Database struct {
+	Session *gorm.DB
+}
+
+// Establish database connection and migrate tables before returning database.Database struct
+func MustNewDatabase(c config.Configuration, d gorm.Dialector, gc gorm.Config, retryTimes int) Database {
+	var (
+		db         *gorm.DB
+		err        error
+		retryCount int
+	)
+
+	slog.Info("Attempting to connect to database")
+
 	err = func() error {
 		for i := 0; i <= retryTimes; i++ {
-			db, err = gorm.Open(dialector, &formConfig)
+			db, err = gorm.Open(d, &gc)
 
 			if err == nil {
+				retryCount = i
 				return nil
 			}
 
@@ -34,17 +43,17 @@ func Connect(
 		return err
 	}()
 	if err != nil {
-		return nil, fmt.Errorf("dataBaseConnect: %w", err)
+		panic(fmt.Sprintf("dataBaseConnect: %v", err))
 	}
 
-	slog.Info("Database connection established")
+	slog.Info("Database connection established", "Retry count", retryCount)
 
 	db.AutoMigrate(
-		&models.TeddyBear{},
-		&models.Picnic{},
-		&models.PicnicLocation{},
-		&models.PicnicParticipant{},
+		&entity.TeddyBear{},
+		&entity.Picnic{},
+		&entity.PicnicLocation{},
+		&entity.PicnicParticipant{},
 	)
 
-	return db, err
+	return Database{Session: db}
 }

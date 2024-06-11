@@ -8,13 +8,13 @@ import (
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
-func (router Router) swagger(fr fiber.Router) {
-	fr.Get("/swagger/*", fiberSwagger.WrapHandler)
+func (h Handler) swagger(r fiber.Router) {
+	r.Get("/swagger/*", fiberSwagger.WrapHandler)
 	slog.Info(
 		fmt.Sprintf(
 			"Swagger URL: http://%s%s/swagger/index.html",
-			router.Config.HTTP.Domain,
-			router.Config.HTTP.Port,
+			h.Config.HTTP.Domain,
+			h.Config.HTTP.Port,
 		),
 	)
 }

@@ -8,13 +8,20 @@ import (
 )
 
 type Actions struct {
-	Logic  *logic.Logic
+	Logic  logic.Logic
 	Config config.Configuration
+}
+
+func NewActions(logic logic.Logic, config config.Configuration) Actions {
+	return Actions{
+		Logic:  logic,
+		Config: config,
+	}
 }
 
 // TODO: Add struct/slice to JSON generic converter
 
-func InitActions(a *Actions) *cli.App {
+func InitActions(a Actions) *cli.App {
 	return &cli.App{
 		Name:  "Teddy Bears",
 		Usage: "Teddy Bear Tech Challenge Console APP",

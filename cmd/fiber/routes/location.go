@@ -4,25 +4,25 @@ import (
 	"log/slog"
 	"net/http"
 
-	"teddy_bears_api_v2/models"
+	"teddy_bears_api_v2/logic"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type responseOneLocation struct {
-	Location *models.PicnicLocation `json:"location"`
+	Location logic.PicnicLocationReturn `json:"location"`
 }
 
 type responseAllLocation struct {
-	Locations []models.PicnicLocation `json:"locations"`
+	Locations []logic.PicnicLocationReturn `json:"locations"`
 }
 
-func (r Router) location(fr fiber.Router) {
-	fr.Get("/", r.listAllLocations)
-	fr.Get("/:id", r.fetchLocationById)
-	fr.Put("/:id", r.updateLocationById)
-	fr.Post("/", r.createLocation)
-	fr.Delete("/:id", r.deleteLocationById)
+func (h Handler) location(r fiber.Router) {
+	r.Get("/", h.listAllLocations)
+	r.Get("/:id", h.fetchLocationById)
+	r.Put("/:id", h.updateLocationById)
+	r.Post("/", h.createLocation)
+	r.Delete("/:id", h.deleteLocationById)
 }
 
 // @Summary		List all picnic locations
@@ -33,9 +33,9 @@ func (r Router) location(fr fiber.Router) {
 // @Success		200			{object}	routes.responseAllLocation
 // @Failure		500			{object}	routes.responseError
 // @Router		/location 	[GET]
-func (r Router) listAllLocations(c *fiber.Ctx) error {
+func (h Handler) listAllLocations(c *fiber.Ctx) error {
 	// get values from db
-	locations, err := r.Logic.ListLocations()
+	locations, err := h.Logic.ListLocations()
 	if err != nil {
 		slog.Error("error getting all objects from db", "error", err)
 		return c.
@@ -59,7 +59,7 @@ func (r Router) listAllLocations(c *fiber.Ctx) error {
 // @Failure		400				{object}	routes.responseError
 // @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[GET]
-func (r Router) fetchLocationById(c *fiber.Ctx) error {
+func (h Handler) fetchLocationById(c *fiber.Ctx) error {
 	// get and validate id
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -70,7 +70,7 @@ func (r Router) fetchLocationById(c *fiber.Ctx) error {
 	}
 
 	// get value from db
-	location, err := r.Logic.FetchLocationByID(id)
+	location, err := h.Logic.FetchLocationByID(id)
 	if err != nil {
 		slog.Error("error getting a objects from db", "error", err)
 		return c.
@@ -90,12 +90,12 @@ func (r Router) fetchLocationById(c *fiber.Ctx) error {
 // @Accept		json
 // @Produce		json
 // @Param		id				path		int							true	"Location ID"
-// @Param		location		body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location		body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		200				{object}	routes.responseOneLocation
 // @Failure		400				{object}	routes.responseError
 // @Failure		500				{object}	routes.responseError
 // @Router		/location/{id}	[PUT]
-func (router Router) updateLocationById(c *fiber.Ctx) error {
+func (router Handler) updateLocationById(c *fiber.Ctx) error {
 	// get and validate id
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -106,7 +106,7 @@ func (router Router) updateLocationById(c *fiber.Ctx) error {
 	}
 
 	// get and validate body as object
-	var inputLocation models.PicnicLocationInput
+	var inputLocation logic.PicnicLocationInput
 	if err := c.BodyParser(&inputLocation); err != nil {
 		slog.Error("BodyParser error", "error", err)
 		return c.
@@ -134,14 +134,14 @@ func (router Router) updateLocationById(c *fiber.Ctx) error {
 // @Tags		location
 // @Accept		json
 // @Produce		json
-// @Param		location	body		models.PicnicLocationInput	true	"Location Object"
+// @Param		location	body		logic.PicnicLocationInput	true	"Location Object"
 // @Success		201			{object}	routes.responseID
 // @Failure		400			{object}	routes.responseError
 // @Failure		500			{object}	routes.responseError
 // @Router		/location	[POST]
-func (router Router) createLocation(c *fiber.Ctx) error {
+func (router Handler) createLocation(c *fiber.Ctx) error {
 	// get and validate body as object
-	var inputLocation models.PicnicLocationInput
+	var inputLocation logic.PicnicLocationInput
 	if err := c.BodyParser(&inputLocation); err != nil {
 		slog.Error("ShouldBindJSON error", "error", err)
 		return c.
@@ -174,7 +174,7 @@ func (router Router) createLocation(c *fiber.Ctx) error {
 // @Failure		500				{object}	routes.responseError
 // @Failure		400				{object}	routes.responseError
 // @Router		/location/{id} 	[DELETE]
-func (router Router) deleteLocationById(c *fiber.Ctx) error {
+func (router Handler) deleteLocationById(c *fiber.Ctx) error {
 	// get and validate id
 	id, err := c.ParamsInt("id")
 	if err != nil {

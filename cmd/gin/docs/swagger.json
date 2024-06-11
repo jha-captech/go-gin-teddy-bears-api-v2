@@ -74,7 +74,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PicnicLocationInput"
+                            "$ref": "#/definitions/logic.PicnicLocationInput"
                         }
                     }
                 ],
@@ -169,7 +169,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PicnicLocationInput"
+                            "$ref": "#/definitions/logic.PicnicLocationInput"
                         }
                     }
                 ],
@@ -284,7 +284,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.TeddyBearInput"
+                            "$ref": "#/definitions/logic.TeddyBearInput"
                         }
                     }
                 ],
@@ -428,7 +428,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.TeddyBearInput"
+                            "$ref": "#/definitions/logic.TeddyBearInput"
                         }
                     }
                 ],
@@ -498,7 +498,21 @@
         }
     },
     "definitions": {
-        "models.PicnicLocation": {
+        "logic.PicnicLocationInput": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "location_name": {
+                    "type": "string"
+                },
+                "municipality": {
+                    "type": "string"
+                }
+            }
+        },
+        "logic.PicnicLocationReturn": {
             "type": "object",
             "properties": {
                 "capacity": {
@@ -515,21 +529,7 @@
                 }
             }
         },
-        "models.PicnicLocationInput": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer"
-                },
-                "location_name": {
-                    "type": "string"
-                },
-                "municipality": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.TeddyBearInput": {
+        "logic.TeddyBearInput": {
             "type": "object",
             "properties": {
                 "accent_color": {
@@ -558,7 +558,7 @@
                 }
             }
         },
-        "models.TeddyBearReturn": {
+        "logic.TeddyBearReturn": {
             "type": "object",
             "properties": {
                 "accent_color": {
@@ -596,7 +596,7 @@
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.PicnicLocation"
+                        "$ref": "#/definitions/logic.PicnicLocationReturn"
                     }
                 }
             }
@@ -607,7 +607,7 @@
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.TeddyBearReturn"
+                        "$ref": "#/definitions/logic.TeddyBearReturn"
                     }
                 }
             }
@@ -640,7 +640,7 @@
             "type": "object",
             "properties": {
                 "location": {
-                    "$ref": "#/definitions/models.PicnicLocation"
+                    "$ref": "#/definitions/logic.PicnicLocationReturn"
                 }
             }
         },
@@ -648,7 +648,7 @@
             "type": "object",
             "properties": {
                 "location": {
-                    "$ref": "#/definitions/models.TeddyBearReturn"
+                    "$ref": "#/definitions/logic.TeddyBearReturn"
                 }
             }
         }

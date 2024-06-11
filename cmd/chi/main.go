@@ -24,35 +24,26 @@ func main() {
 func Execute() {
 	config.LoggerInit()
 
-	slog.Info("running http.main()")
+	slog.Info("running chi.main()")
 
 	config.DotEnvInit()
-	config, err := config.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	config := config.MustNewConfig()
 
 	SwaggerInit(config)
 
 	// database connect
-	db, err := database.Connect(
+	db := database.MustNewDatabase(
 		config,
 		sqlite.Open(config.Database.Name),
 		gorm.Config{},
 		config.Database.ConnectionRetry,
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	// logic setup
-	logic, err := logic.InitLogic(db)
-	if err != nil {
-		panic(err)
-	}
+	logicSession := logic.NewLogic(db)
 
 	// router struct setup
-	router := &routes.Handler{Logic: logic, Config: config}
+	handler := routes.NewHandler(logicSession, config)
 
 	// setup app
 	app := chi.NewRouter()
@@ -61,7 +52,7 @@ func Execute() {
 	app.Use(middleware.Logger)
 
 	// setup routes
-	router.InitRouter(app)
+	routes.RoutesInit(app, handler)
 
 	// log routes
 	if strings.ToLower(config.Env) != "prod" {

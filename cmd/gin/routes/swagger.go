@@ -9,7 +9,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func (router Router) swagger(r *gin.Engine) {
+func (router Handler) swagger(r *gin.Engine) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	slog.Info(
 		fmt.Sprintf(

@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (r *Router) healthCheck(fr fiber.Router) {
-	fr.Get("/", r.runHealthCheck)
+func (h *Handler) healthCheck(r fiber.Router) {
+	r.Get("/", h.runHealthCheck)
 }
 
 // @Summary		Health check response
@@ -17,7 +17,7 @@ func (r *Router) healthCheck(fr fiber.Router) {
 // @Produce		json
 // @Success		200				{object}	routes.responseMessage
 // @Router		/health-check 	[GET]
-func (r *Router) runHealthCheck(c *fiber.Ctx) error {
+func (h *Handler) runHealthCheck(c *fiber.Ctx) error {
 	return c.
 		Status(http.StatusOK).
 		JSON(responseMessage{Message: "Health check response."})
